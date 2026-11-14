@@ -56,6 +56,7 @@ function LoginPage() {
                 <button type="submit" disabled = {loading} >
                     {loading ? "Logging in..." : "Login"}
                 </button>
+                {error ? <p>{error}</p> : <p></p>}
             </form>
 
             <p>

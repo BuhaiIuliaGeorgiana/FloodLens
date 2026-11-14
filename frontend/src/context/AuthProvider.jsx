@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 
 import { supabase } from "../config/supabase";
 import { AuthContext } from "./AuthContext";
 
 function AuthProvider({children}){
+
     const [session,setSession] = useState(null);
 
     const [loading,setLoading] = useState(true);

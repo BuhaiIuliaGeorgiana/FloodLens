@@ -85,6 +85,8 @@ function SignUpPage(){
                 <Link to="/login" disabled = {loading} >
                 {loading ? "Logging in.." : "Log in"}
                 </Link>
+
+                {message ? <p>{message} </p> : <p></p>}
             </p>
         </div>
     );
