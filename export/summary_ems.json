@@ -3,10 +3,10 @@
   "name": "Pechea, Galati",
   "source": "Copernicus EMS EMSR758, AOI 03 Pechea",
   "aoi_bbox_wgs84": [
-    27.61,
-    45.46,
-    27.87,
-    45.74
+    27.74,
+    45.58,
+    27.86,
+    45.68
   ],
   "clipped_to_bbox": true,
   "crs": "EPSG:4326",
@@ -32,8 +32,8 @@
       },
       "acquired_at_utc": "2024-09-14T04:22:00Z",
       "flooded_area_ha_total": 1078.6,
-      "flooded_area_ha_in_bounds": 1078.6,
-      "polygons_in_bounds": 108
+      "flooded_area_ha_in_bounds": 106.6,
+      "polygons_in_bounds": 21
     },
     "del": {
       "label": "Delineation",
@@ -71,8 +71,8 @@
       },
       "acquired_at_utc": "2024-09-15T15:59:00Z",
       "flooded_area_ha_total": 866.7,
-      "flooded_area_ha_in_bounds": 866.7,
-      "polygons_in_bounds": 131
+      "flooded_area_ha_in_bounds": 56.2,
+      "polygons_in_bounds": 39
     },
     "monit1": {
       "label": "Delineation Monitoring 1",
@@ -106,8 +106,8 @@
       },
       "acquired_at_utc": "2024-09-17T16:13:00Z",
       "flooded_area_ha_total": 427.4,
-      "flooded_area_ha_in_bounds": 427.4,
-      "polygons_in_bounds": 237
+      "flooded_area_ha_in_bounds": 11.5,
+      "polygons_in_bounds": 22
     }
   }
 }

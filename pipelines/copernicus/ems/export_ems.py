@@ -14,7 +14,7 @@ from shapely.geometry import box
 
 # Ordine: longitudine vest, latitudine sud, longitudine est, latitudine nord.
 # Aceeasi valoare ca in notebook-urile Sentinel. Se schimba intr-un singur loc.
-PECHEA_BOUNDS = [27.61, 45.46, 27.87, 45.74]
+PECHEA_BOUNDS = [27.74, 45.58, 27.86, 45.68]
 CLIP_LA_BOUNDS = True   # False = pastreaza toata zona AOI 03
 
 GPKG = "data/ems/pechea_flood_ems.gpkg"
@@ -82,7 +82,7 @@ taie = box(*PECHEA_BOUNDS) if CLIP_LA_BOUNDS else None
 OUT_DIR.mkdir(exist_ok=True)
 
 aoi_complet = gpd.read_file(GPKG, layer="aoi").to_crs(4326)
-aoi = scrie(aoi_complet[["emsr_id", "locality", "geometry"]], "ems_aoi03", None)
+aoi = scrie(aoi_complet[["emsr_id", "locality", "geometry"]], "ems_aoi03", taie)
 
 sumar = {
     "event_id": "pechea",
