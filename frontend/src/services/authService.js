@@ -1,16 +1,20 @@
 import { supabase } from "../config/supabase";
 
+
 export async function register(email,password){
     return await supabase.auth.signUp({
-        email:email,
-        password:password
+        email,
+        password,
+        options: {
+            emailRedirectTo: window.location.origin
+        }
     });
 }
 
 export async function login(email,password){
     return await supabase.auth.signInWithPassword({
-        email:email,
-        password:password
+        email,
+        password
     });
 }
 

@@ -1,7 +1,22 @@
-venv/
+# Python environment and caches
 .venv/
+venv/
 __pycache__/
-.DS_Store
+*.pyc
+
+# Editor settings
+.idea/
+.vscode/
+
+# Raw and intermediate data
+data/raw/
+*.shp.zip
 data/dem/
 data/sentinel-1/
 data/ems/EMSR758_*/
+
+# Local files and OS junk
+.env
+*.log
+.DS_Store
+Thumbs.db

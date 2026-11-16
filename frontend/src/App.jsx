@@ -1,16 +1,32 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, Navigate } from "react-router";
+import { useAuth } from "./hooks/useAuth";
 
-
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import HomePage from "./pages/HomePage";
-function App() {
-    return (
-        <Routes>
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/" element={<HomePage />} />
+function App(){
+
+    const {user,loading} = useAuth();
+
+    
+    if(loading){
+        return <p>Checking session...</p>;
+    }
+
+    return(
+        <Routes>
+            <Route path="/"
+                   element={user ? <HomePage/> : <Navigate to="/login" replace/>}
+            />
+
+            <Route path="/login"
+                   element={user ? <Navigate to="/" replace/> : <LoginPage/>}
+            />
+
+            <Route path="/signup"
+                   element={user ? <Navigate to="/" replace/> : <SignUpPage/>}
+            />
         </Routes>
     );
 }

@@ -11,7 +11,7 @@ Doua functii, fiecare intoarce o LISTA de dictionare in formatul cerut de aplica
 PNG-urile sunt in proiectia Web Mercator (ca sa se potriveasca exact pe harta din browser),
 asa ca pot fi puse direct ca imagine cu colturile `bounds`.
 
-Folosire (din radacina repo-ului):   python dem+ems+sentinel1/layers_dem_ems.py
+Folosire (din radacina repo-ului):   python pipelines/dem+ems/layers_dem_ems.py
 Necesita: rasterio, numpy, matplotlib, pillow. Ruleaza dupa export_ems.py (citeste export/summary_ems.json).
 """
 import json
