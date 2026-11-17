@@ -1,4 +1,4 @@
-
+import { supabase } from "../config/supabase";
 import { useState, useEffect } from "react";
 import { getPecheaEvent } from "../services/eventService";
 
@@ -62,16 +62,19 @@ function PublicEventPage(){
             <h2>Available data sources</h2>
 
             <ul>
-                {event.event_layers.map((layer) => (
-                    <li key={layer.id}>
-                        <h3>{layer.source}</h3>
-                        <p>Type: {layer.layer_type}</p>
-                        <p>Period: {layer.period ?? "Static"}</p>
-                        <p>Status: {layer.status}</p>
-
-                        {layer.reason && <p>Reason: {layer.reason}</p>}
-                    </li>
-                ))}
+                {event.event_layers.map({layer.status === "available" && layer.storage_path && (
+    <a
+        href={
+            supabase.storage
+                .from("public-demo-layers")
+                .getPublicUrl(layer.storage_path).data.publicUrl
+        }
+        target="_blank"
+        rel="noopener noreferrer"
+    >
+        View GeoJSON
+    </a>
+)})}
             </ul>
         </main>
     );
