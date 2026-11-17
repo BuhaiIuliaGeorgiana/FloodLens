@@ -1,15 +1,14 @@
+
 import { supabase } from "../config/supabase";
 import { useState, useEffect } from "react";
 import { getPecheaEvent } from "../services/eventService";
 
 function PublicEventPage(){
     const [event,setEvent] = useState(null);
-
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState("");
 
     useEffect(() => {
-
         let ignore = false;
 
         async function loadEvent(){
@@ -41,7 +40,7 @@ function PublicEventPage(){
     }, []);
 
     if(loading){
-        return (<p>Loading event...</p>);
+        return <p>Loading event...</p>;
     }
 
     if(error){
@@ -62,19 +61,43 @@ function PublicEventPage(){
             <h2>Available data sources</h2>
 
             <ul>
-                {event.event_layers.map({layer.status === "available" && layer.storage_path && (
-    <a
-        href={
-            supabase.storage
-                .from("public-demo-layers")
-                .getPublicUrl(layer.storage_path).data.publicUrl
-        }
-        target="_blank"
-        rel="noopener noreferrer"
-    >
-        View GeoJSON
-    </a>
-)})}
+                {(event.event_layers ?? []).map((layer) => {
+
+                    // Get the public URL if the file is available
+                    let fileUrl = null;
+
+                    if(layer.status === "available" && layer.storage_path){
+                        const result = supabase.storage
+                            .from("public-demo-layers")
+                            .getPublicUrl(layer.storage_path);
+
+                        fileUrl = result.data.publicUrl;
+                    }
+
+                    return(
+                        <li key={layer.id}>
+                            <h3>{layer.source}</h3>
+
+                            <p>Period: {layer.period ?? "Static"}</p>
+                            <p>Type: {layer.layer_type}</p>
+                            <p>Status: {layer.status}</p>
+
+                            {fileUrl && (
+                                <a
+                                    href={fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    View file
+                                </a>
+                            )}
+
+                            {layer.status === "unavailable" && (
+                                <p>Reason: {layer.reason}</p>
+                            )}
+                        </li>
+                    );
+                })}
             </ul>
         </main>
     );
