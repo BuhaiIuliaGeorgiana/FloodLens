@@ -1,0 +1,137 @@
+[
+  {
+    "id": "dem_elevation",
+    "source": "Copernicus DEM GLO-30",
+    "period": "static",
+    "type": "image",
+    "url": "/data/pechea/dem_elevation.png",
+    "bounds": [
+      27.74,
+      45.58,
+      27.86,
+      45.68
+    ],
+    "acquired_at_utc": null,
+    "status": "available"
+  },
+  {
+    "id": "dem_slope",
+    "source": "Copernicus DEM GLO-30",
+    "period": "static",
+    "type": "image",
+    "url": "/data/pechea/dem_slope.png",
+    "bounds": [
+      27.74,
+      45.58,
+      27.86,
+      45.68
+    ],
+    "acquired_at_utc": null,
+    "status": "available"
+  },
+  {
+    "id": "ems_aoi",
+    "source": "Copernicus EMS",
+    "period": "static",
+    "type": "vector",
+    "url": "/data/pechea/ems_aoi03.geojson",
+    "bounds": [
+      27.74,
+      45.58,
+      27.85937,
+      45.68
+    ],
+    "acquired_at_utc": null,
+    "status": "available"
+  },
+  {
+    "id": "ems_fep_flood",
+    "source": "Copernicus EMS",
+    "period": "during",
+    "type": "vector",
+    "url": "/data/pechea/ems_flood_fep_20240914.geojson",
+    "bounds": [
+      27.77915,
+      45.58618,
+      27.81393,
+      45.65228
+    ],
+    "acquired_at_utc": "2024-09-14T04:22:00Z",
+    "status": "available"
+  },
+  {
+    "id": "ems_del_flood",
+    "source": "Copernicus EMS",
+    "period": "during",
+    "type": "vector",
+    "url": "/data/pechea/ems_flood_del_20240915.geojson",
+    "bounds": [
+      27.78005,
+      45.5899,
+      27.81398,
+      45.65514
+    ],
+    "acquired_at_utc": "2024-09-15T15:59:00Z",
+    "status": "available"
+  },
+  {
+    "id": "ems_del_depth",
+    "source": "Copernicus EMS",
+    "period": "during",
+    "type": "vector",
+    "url": "/data/pechea/ems_depth_del_20240915.geojson",
+    "bounds": [
+      27.78005,
+      45.5899,
+      27.81398,
+      45.65514
+    ],
+    "acquired_at_utc": "2024-09-15T15:59:00Z",
+    "status": "available"
+  },
+  {
+    "id": "ems_monit1_flood",
+    "source": "Copernicus EMS",
+    "period": "during",
+    "type": "vector",
+    "url": "/data/pechea/ems_flood_monit1_20240917.geojson",
+    "bounds": [
+      27.78064,
+      45.59344,
+      27.81398,
+      45.64757
+    ],
+    "acquired_at_utc": "2024-09-17T16:13:00Z",
+    "status": "available"
+  },
+  {
+    "id": "ems_monit1_depth",
+    "source": "Copernicus EMS",
+    "period": "during",
+    "type": "vector",
+    "url": "/data/pechea/ems_depth_monit1_20240917.geojson",
+    "bounds": [
+      27.78064,
+      45.59344,
+      27.81398,
+      45.64757
+    ],
+    "acquired_at_utc": "2024-09-17T16:13:00Z",
+    "status": "available"
+  },
+  {
+    "id": "ems_monit1_max_extent",
+    "source": "Copernicus EMS",
+    "period": "during",
+    "type": "vector",
+    "url": "/data/pechea/ems_max_extent_monit1_20240917.geojson",
+    "bounds": [
+      27.78005,
+      45.5899,
+      27.81398,
+      45.65514
+    ],
+    "acquired_at_utc": "2024-09-17T16:13:00Z",
+    "status": "available"
+  }
+]

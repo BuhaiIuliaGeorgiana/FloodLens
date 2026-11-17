@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "ems_aoi03",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "emsr_id": "EMSR758", "locality": "Pechea", "area_ha": 10060.36 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 27.859374872588084, 45.58 ], [ 27.74, 45.58 ], [ 27.74, 45.68 ], [ 27.85294570567385, 45.68 ], [ 27.859374872588084, 45.58 ] ] ] } }
+]
+}

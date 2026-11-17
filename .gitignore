@@ -11,6 +11,9 @@ __pycache__/
 # Raw and intermediate data
 data/raw/
 *.shp.zip
+data/dem/
+data/sentinel-1/
+data/ems/EMSR758_*/
 
 # Local files and OS junk
 .env
