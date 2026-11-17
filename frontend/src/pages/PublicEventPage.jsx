@@ -2,6 +2,7 @@
 import { supabase } from "../config/supabase";
 import { useState, useEffect } from "react";
 import { getPecheaEvent } from "../services/eventService";
+import RoadsPreview from "../components/RoadsPreview";
 
 function PublicEventPage(){
     const [event,setEvent] = useState(null);
@@ -12,19 +13,19 @@ function PublicEventPage(){
         let ignore = false;
 
         async function loadEvent(){
-            try {
+            try{
                 const data = await getPecheaEvent();
 
                 if(!ignore){
                     setEvent(data);
                 }
 
-            } catch(err) {
+            }catch(err){
                 if(!ignore){
                     setError(err.message);
                 }
 
-            } finally {
+            }finally{
                 if(!ignore){
                     setLoading(false);
                 }
@@ -51,6 +52,17 @@ function PublicEventPage(){
         return <p>Event not found.</p>;
     }
 
+    // Get all layers belonging to the event
+    const layers = event.event_layers ?? [];
+
+    // Find the available roads layer
+    const roadsLayer = layers.find(
+        (layer) =>
+            layer.layer_type === "roads" &&
+            layer.status === "available" &&
+            layer.storage_path
+    );
+
     return(
         <main>
             <h1>{event.title}</h1>
@@ -58,12 +70,19 @@ function PublicEventPage(){
             <p>Locality: {event.locality}</p>
             <p>County: {event.county}</p>
 
+            {/* Display real roads on an interactive map */}
+            {roadsLayer && (
+                <RoadsPreview
+                    storagePath={roadsLayer.storage_path}
+                />
+            )}
+
             <h2>Available data sources</h2>
 
             <ul>
-                {(event.event_layers ?? []).map((layer) => {
+                {layers.map((layer) => {
 
-                    // Get the public URL if the file is available
+                    // Get the URL of an available file
                     let fileUrl = null;
 
                     if(layer.status === "available" && layer.storage_path){
@@ -82,6 +101,7 @@ function PublicEventPage(){
                             <p>Type: {layer.layer_type}</p>
                             <p>Status: {layer.status}</p>
 
+                            {/* Link to the real file */}
                             {fileUrl && (
                                 <a
                                     href={fileUrl}
@@ -92,6 +112,7 @@ function PublicEventPage(){
                                 </a>
                             )}
 
+                            {/* Explanation for unavailable layers */}
                             {layer.status === "unavailable" && (
                                 <p>Reason: {layer.reason}</p>
                             )}
