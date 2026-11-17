@@ -13,14 +13,17 @@ export async function getPecheaEvent(){
             started_at,
             ended_at,
             event_layers (
-                id,
-                source,
-                period,
-                layer_type,
-                kind,
-                status,
-                reason
-            )
+                    id,
+                    source,
+                    period,
+                    layer_type,
+                    kind,
+                    status,
+                    reason,
+                    storage_path,
+                    acquired_at,
+                    bounds
+                )
         `)
         .eq("slug","pechea-2024-09")
         .single();
