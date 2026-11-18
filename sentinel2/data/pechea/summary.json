@@ -1,0 +1,58 @@
+{
+  "event_id": "pechea",
+  "name": "Pechea, Galati",
+  "source": "COPERNICUS/S2_SR_HARMONIZED",
+  "index_type": "MNDWI",
+  "aoi_bbox_wgs84": [
+    27.74,
+    45.58,
+    27.86,
+    45.68
+  ],
+  "pixel_size_m": 10,
+  "crs": "EPSG:32635",
+  "thresholds": {
+    "prag_apa": 0.1,
+    "crestere_minima": 0.2
+  },
+  "scenes": {
+    "before": {
+      "acquired_at_utc": "2024-08-24T09:07:44Z",
+      "cloud_cover_pct": 0.003845,
+      "id": "20240824T085551_20240824T090537_T35TNL",
+      "mgrs_tile": "35TNL",
+      "orbit_number": 7
+    },
+    "during": {
+      "acquired_at_utc": "2024-09-18T09:07:42Z",
+      "cloud_cover_pct": 1.502101,
+      "id": "20240918T085549_20240918T085938_T35TNL",
+      "mgrs_tile": "35TNL",
+      "orbit_number": 7
+    },
+    "after": {
+      "acquired_at_utc": "2024-09-23T09:07:48Z",
+      "cloud_cover_pct": 0.173936,
+      "id": "20240923T085711_20240923T090306_T35TNL",
+      "mgrs_tile": "35TNL",
+      "orbit_number": 7
+    }
+  },
+  "files": {
+    "before_ndwi": "before_ndwi.tif",
+    "during_ndwi": "during_ndwi.tif",
+    "before_mndwi": "before_mndwi.tif",
+    "during_mndwi": "during_mndwi.tif",
+    "change_mndwi": "change_mndwi.tif",
+    "flood_mask": "flood_mask.tif",
+    "after_ndwi": "after_ndwi.tif",
+    "after_mndwi": "after_mndwi.tif",
+    "flood_evolution": "flood_evolution.tif",
+    "flood_extent": "flood_extent.geojson"
+  },
+  "mask_legend": {
+    "0": "nedetectat",
+    "1": "candidat inundat",
+    "-9999": "fara date (nori/umbre/lipsa)"
+  }
+}
