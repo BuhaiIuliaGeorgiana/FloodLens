@@ -42,21 +42,24 @@ function PublicEventPage(){
 
     // Pick the map layers once per event, so the map
     // does not download the files again on every render
-    const {roadsLayer, emsLayers} = useMemo(() => {
-        const available = (event?.event_layers ?? []).filter(
-            (layer) => layer.status === "available" && layer.storage_path
-        );
+    const { roadsLayer, emsLayers, imageLayers } = useMemo(() => {
+    const available = (event?.event_layers ?? []).filter(
+        (layer) => layer.status === "available" && layer.storage_path
+    );
 
-        return {
-            // Find the available roads layer
-            roadsLayer: available.find((layer) => layer.layer_type === "roads") ?? null,
+    return {
+        roadsLayer:
+            available.find((layer) => layer.layer_type === "roads") ?? null,
 
-            // One EMS flood layer per date, from the earliest to the latest
-            emsLayers: available
-                .filter((layer) => layer.layer_type === "ems_reference")
-                .sort((a, b) => new Date(a.acquired_at) - new Date(b.acquired_at))
-        };
-    }, [event]);
+        emsLayers: available
+            .filter((layer) => layer.layer_type === "ems_reference")
+            .sort((a, b) => new Date(a.acquired_at) - new Date(b.acquired_at)),
+
+        imageLayers: available.filter(
+            (layer) => layer.kind === "image" && layer.bounds
+        ),
+    };
+}, [event]);
 
     if(loading){
         return <p>Loading event...</p>;
@@ -81,10 +84,11 @@ function PublicEventPage(){
             <p>County: {event.county}</p>
 
             {/* Display real roads and EMS flood zones on an interactive map */}
-            {(roadsLayer || emsLayers.length > 0) && (
+            {(roadsLayer || emsLayers.length > 0 || imageLayers.length > 0) && (
                 <EventMap
                     roadsLayer={roadsLayer}
                     emsLayers={emsLayers}
+                    imageLayers={imageLayers}
                 />
             )}
 

@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, GeoJSON, LayersControl } from "react-leaflet";
+import {
+    MapContainer,
+    TileLayer,
+    GeoJSON,
+    LayersControl,
+    ImageOverlay,
+} from "react-leaflet";
+
 import { supabase } from "../config/supabase";
 import "leaflet/dist/leaflet.css";
 
@@ -8,19 +15,16 @@ const EMS_COLORS = ["#f4a261", "#d62828", "#6a0dad", "#2a9d8f"];
 
 // Download a GeoJSON file from Supabase Storage
 async function loadGeoJson(storagePath){
-    // Get the URL from Supabase Storage
     const result = supabase.storage
         .from("public-demo-layers")
         .getPublicUrl(storagePath);
 
-    // Download the actual GeoJSON
     const response = await fetch(result.data.publicUrl);
 
     if(!response.ok){
         throw new Error(`Could not load ${storagePath}`);
     }
 
-    // Convert JSON text into a JavaScript object
     const data = await response.json();
 
     if(data.type !== "FeatureCollection"){
@@ -50,15 +54,25 @@ function bindFloodPopup(feature, leafletLayer){
     const props = feature.properties ?? {};
     const lines = [];
 
-    if(props.area_ha !== undefined) lines.push(`Flooded area: ${props.area_ha} ha`);
-    if(props.acq_utc) lines.push(`Image acquired: ${props.acq_utc} UTC`);
+    if(props.area_ha !== undefined){
+        lines.push(`Flooded area: ${props.area_ha} ha`);
+    }
+
+    if(props.acq_utc){
+        lines.push(`Image acquired: ${props.acq_utc} UTC`);
+    }
 
     if(lines.length > 0){
-        leafletLayer.bindPopup(lines.join("<br>"));
+        // Use textContent so attribute values are displayed as plain text.
+        const popup = document.createElement("div");
+        popup.style.whiteSpace = "pre-line";
+        popup.textContent = lines.join("\n");
+
+        leafletLayer.bindPopup(popup);
     }
 }
 
-function EventMap({roadsLayer, emsLayers}){
+function EventMap({ roadsLayer, emsLayers, imageLayers = [] }){
     const [roads,setRoads] = useState(null);
     const [floods,setFloods] = useState([]);
     const [loading,setLoading] = useState(true);
@@ -74,18 +88,27 @@ function EventMap({roadsLayer, emsLayers}){
             setFloods([]);
 
             try{
-                // Download roads and all EMS files at the same time
+                // Download roads and all EMS files at the same time.
+                // Satellite PNGs are loaded separately by ImageOverlay.
                 const [roadsData, ...emsData] = await Promise.all([
-                    roadsLayer ? loadGeoJson(roadsLayer.storage_path) : null,
-                    ...emsLayers.map((layer) => loadGeoJson(layer.storage_path))
+                    roadsLayer
+                        ? loadGeoJson(roadsLayer.storage_path)
+                        : null,
+
+                    ...emsLayers.map(
+                        (layer) => loadGeoJson(layer.storage_path)
+                    )
                 ]);
 
                 if(!ignore){
                     setRoads(roadsData);
-                    setFloods(emsLayers.map((layer, index) => ({
-                        layer,
-                        data: emsData[index]
-                    })));
+
+                    setFloods(
+                        emsLayers.map((layer, index) => ({
+                            layer,
+                            data: emsData[index]
+                        }))
+                    );
                 }
 
             }catch(err){
@@ -119,7 +142,9 @@ function EventMap({roadsLayer, emsLayers}){
         <section style={{maxWidth: "750px", margin: "20px auto"}}>
             <h2>Event map</h2>
 
-            {roads && <p>Real road segments: {roads.features.length}</p>}
+            {roads && (
+                <p>Real road segments: {roads.features.length}</p>
+            )}
 
             <MapContainer
                 bounds={[[45.58,27.74],[45.68,27.86]]}
@@ -131,10 +156,46 @@ function EventMap({roadsLayer, emsLayers}){
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {/* Checkboxes in the top right corner to show/hide each layer */}
+                {/* Checkboxes to show or hide each layer */}
                 <LayersControl position="topright" collapsed={false}>
+
+                    {/* Satellite image previews: Sentinel-1 and Sentinel-2 */}
+                    {imageLayers.map((layer) => {
+                        const { data } = supabase.storage
+                            .from("public-demo-layers")
+                            .getPublicUrl(layer.storage_path);
+
+                        // Database order: longitude, latitude.
+                        const [west, south, east, north] = layer.bounds;
+
+                        // Leaflet order: latitude, longitude.
+                        const imageBounds = [
+                            [south, west],
+                            [north, east]
+                        ];
+
+                        return(
+                            <LayersControl.Overlay
+                                key={layer.id}
+                                name={`${layer.source} — ${layer.period} — ${formatDate(layer.acquired_at)}`}
+                            >
+                                <ImageOverlay
+                                    url={data.publicUrl}
+                                    bounds={imageBounds}
+                                    opacity={0.8}
+                                    zIndex={1}
+                                    attribution="Copernicus Sentinel data"
+                                />
+                            </LayersControl.Overlay>
+                        );
+                    })}
+
+                    {/* OpenStreetMap roads */}
                     {roads && (
-                        <LayersControl.Overlay name="Roads (OpenStreetMap)" checked>
+                        <LayersControl.Overlay
+                            name="Roads (OpenStreetMap)"
+                            checked
+                        >
                             <GeoJSON
                                 data={roads}
                                 style={{
@@ -145,7 +206,7 @@ function EventMap({roadsLayer, emsLayers}){
                         </LayersControl.Overlay>
                     )}
 
-                    {/* One overlay per EMS date, only the latest is shown at first */}
+                    {/* One EMS overlay per date; latest shown initially */}
                     {floods.map(({layer, data}, index) => (
                         <LayersControl.Overlay
                             key={layer.id}
@@ -163,6 +224,7 @@ function EventMap({roadsLayer, emsLayers}){
                             />
                         </LayersControl.Overlay>
                     ))}
+
                 </LayersControl>
             </MapContainer>
 
@@ -171,11 +233,19 @@ function EventMap({roadsLayer, emsLayers}){
                 not confirmed flood damage.
             </p>
 
+            {imageLayers.length > 0 && (
+                <p>
+                    Enable a satellite preview using the map controls.
+                    Image colors depend on the displayed band or index
+                    and do not, by themselves, confirm flooding.
+                </p>
+            )}
+
             {floods.length > 0 && (
                 <p>
-                    Colored areas are flood zones mapped by Copernicus EMS
-                    from satellite images. EMS only mapped the Pechea area,
-                    so no flood zone outside it does not mean no flooding.
+                    Colored polygons are flood zones mapped by Copernicus EMS.
+                    The absence of a polygon outside the mapped coverage
+                    does not mean there was no flooding.
                 </p>
             )}
         </section>
