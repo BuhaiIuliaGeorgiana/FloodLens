@@ -71,7 +71,23 @@ function bindFloodPopup(feature, leafletLayer){
         leafletLayer.bindPopup(popup);
     }
 }
+function getImageLabel(layer) {
+    const path = (layer.storage_path ?? "").toLowerCase();
 
+    let band = "";
+
+    if (path.endsWith("_vv.png")) band = "VV";
+    else if (path.endsWith("_vh.png")) band = "VH";
+    else if (path.endsWith("_mndwi.png")) band = "MNDWI";
+    else if (path.endsWith("_ndwi.png")) band = "NDWI";
+
+    return [
+        layer.source,
+        band,
+        layer.period,
+        formatDate(layer.acquired_at),
+    ].filter(Boolean).join(" — ");
+}
 function EventMap({ roadsLayer, emsLayers, imageLayers = [] }){
     const [roads,setRoads] = useState(null);
     const [floods,setFloods] = useState([]);
@@ -177,7 +193,7 @@ function EventMap({ roadsLayer, emsLayers, imageLayers = [] }){
                         return(
                             <LayersControl.Overlay
                                 key={layer.id}
-                                name={`${layer.source} — ${layer.period} — ${formatDate(layer.acquired_at)}`}
+                                name={getImageLabel(layer)}
                             >
                                 <ImageOverlay
                                     url={data.publicUrl}

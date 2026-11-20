@@ -19,9 +19,8 @@ data_folder = sentinel2_folder / "data" / "pechea"
 output_folder = sentinel2_folder / "export" / "pechea"
 output_folder.mkdir(parents=True, exist_ok=True)
 
-input_file = data_folder / "during_mndwi.tif"
-output_file = output_folder / "s2_during_mndwi.png"
-
+input_file = data_folder / "after_mndwi.tif"
+output_file = output_folder / "s2_after_mndwi.png"
 
 with rasterio.open(input_file) as source:
     # Read the first band. Each pixel contains an MNDWI value.
@@ -75,7 +74,7 @@ bounds = list(
     )
 )
 
-# Use this same colour scale for before/during/after previews.
+# Use this same colour scale for after/during/after previews.
 minimum, maximum = -0.5, 0.5
 
 colour_map = LinearSegmentedColormap.from_list(
@@ -106,17 +105,17 @@ summary = json.loads(
 )
 
 layer = {
-    "id": "s2_during_mndwi",
+    "id": "s2_after_mndwi",
     "source": "Sentinel-2",
-    "period": "during",
+    "period": "after",
     "type": "image",
-    "url": "/data/pechea/s2_during_mndwi.png",
+    "url": "/data/pechea/s2_after_mndwi.png",
     "bounds": bounds,
-    "acquired_at_utc": summary["scenes"]["during"]["acquired_at_utc"],
+    "acquired_at_utc": summary["scenes"]["after"]["acquired_at_utc"],
     "status": "available",
 }
 
-metadata_file = output_folder / "s2_during_mndwi.json"
+metadata_file = output_folder / "s2_after_mndwi.json"
 metadata_file.write_text(
     json.dumps(layer, indent=2),
     encoding="utf-8",

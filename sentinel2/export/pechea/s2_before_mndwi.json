@@ -1,0 +1,15 @@
+{
+  "id": "s2_before_mndwi",
+  "source": "Sentinel-2",
+  "period": "before",
+  "type": "image",
+  "url": "/data/pechea/s2_before_mndwi.png",
+  "bounds": [
+    27.738566084436947,
+    45.57914619327879,
+    27.861576387020655,
+    45.68089572648889
+  ],
+  "acquired_at_utc": "2024-08-24T09:07:44Z",
+  "status": "available"
+}
