@@ -1,10 +1,13 @@
 
 import { supabase } from "../config/supabase";
 import { useState, useEffect, useMemo } from "react";
-import { getPecheaEvent } from "../services/eventService";
+import { Link, useParams } from "react-router";
+import { getEventBySlug } from "../services/eventService";
 import EventMap from "../components/EventMap";
+import ProcessingPanel from "../components/ProcessingPanel";
 
 function PublicEventPage(){
+    const {slug} = useParams();
     const [event,setEvent] = useState(null);
     const [loading,setLoading] = useState(true);
     const [error,setError] = useState("");
@@ -13,8 +16,11 @@ function PublicEventPage(){
         let ignore = false;
 
         async function loadEvent(){
+            setLoading(true);
+            setError("");
+
             try{
-                const data = await getPecheaEvent();
+                const data = await getEventBySlug(slug);
 
                 if(!ignore){
                     setEvent(data);
@@ -38,7 +44,16 @@ function PublicEventPage(){
             ignore = true;
         };
 
-    }, []);
+    }, [slug]);
+
+    // Reload the event after a processing run ends, to show the new layers
+    async function handleRunFinished(){
+        try{
+            setEvent(await getEventBySlug(slug));
+        }catch(err){
+            setError(err.message);
+        }
+    }
 
     // Pick the map layers once per event, so the map
     // does not download the files again on every render
@@ -70,7 +85,12 @@ function PublicEventPage(){
     }
 
     if(!event){
-        return <p>Event not found.</p>;
+        return(
+            <main>
+                <p>Event not found.</p>
+                <Link to="/">Back to events</Link>
+            </main>
+        );
     }
 
     // Get all layers belonging to the event
@@ -78,14 +98,29 @@ function PublicEventPage(){
 
     return(
         <main>
+            <p><Link to="/">← Back to events</Link></p>
+
             <h1>{event.title}</h1>
 
-            <p>Locality: {event.locality}</p>
-            <p>County: {event.county}</p>
+            {event.locality && <p>Locality: {event.locality}</p>}
+            {event.county && <p>County: {event.county}</p>}
+            <p>Started: {formatDay(event.started_at)}</p>
+            <p>
+                {event.ended_at
+                    ? `Ended: ${formatDay(event.ended_at)}`
+                    : "Ongoing event"}
+            </p>
+            {event.visibility === "private" && <p>Private event</p>}
 
-            {/* Display real roads and EMS flood zones on an interactive map */}
-            {(roadsLayer || emsLayers.length > 0 || imageLayers.length > 0) && (
+            <ProcessingPanel
+                eventId={event.id}
+                onRunFinished={handleRunFinished}
+            />
+
+            {/* Display the event zone, real roads and EMS flood zones */}
+            {(event.aoi_geojson || roadsLayer || emsLayers.length > 0 || imageLayers.length > 0) && (
                 <EventMap
+                    aoi={event.aoi_geojson}
                     roadsLayer={roadsLayer}
                     emsLayers={emsLayers}
                     imageLayers={imageLayers}
@@ -93,6 +128,10 @@ function PublicEventPage(){
             )}
 
             <h2>Available data sources</h2>
+
+            {layers.length === 0 && (
+                <p>No results yet for this event.</p>
+            )}
 
             <ul>
                 {layers.map((layer) => {
@@ -137,6 +176,13 @@ function PublicEventPage(){
             </ul>
         </main>
     );
+}
+
+// Show a date as a Romanian calendar day
+function formatDay(value){
+    return new Date(value).toLocaleDateString("ro-RO", {
+        timeZone: "Europe/Bucharest"
+    });
 }
 
 export default PublicEventPage;
