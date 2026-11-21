@@ -4,6 +4,7 @@ import PublicEventPage from "./pages/PublicEventPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import NewEventPage from "./pages/NewEventPage";
 
 function App(){
 
@@ -28,7 +29,11 @@ function App(){
                    element={user ? <Navigate to="/" replace/> : <SignUpPage/>}
             />
 
-            <Route path="/events/pechea-2024-09"
+            <Route path="/events/new"
+                   element={user ? <NewEventPage/> : <Navigate to="/login" replace/>}
+            />
+
+            <Route path="/events/:slug"
                     element={<PublicEventPage/>}
             />
         </Routes>
