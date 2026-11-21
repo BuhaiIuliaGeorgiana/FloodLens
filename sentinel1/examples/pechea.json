@@ -1,0 +1,24 @@
+{
+  "event_id": "pechea-validation-example",
+  "aoi": {
+    "type": "Polygon",
+    "coordinates": [[[27.74, 45.58], [27.86, 45.58], [27.86, 45.68], [27.74, 45.68], [27.74, 45.58]]]
+  },
+  "baseline_start": "2024-08-01T00:00:00Z",
+  "event_start": "2024-09-14T00:00:00Z",
+  "search_end": "2024-09-19T00:00:00Z",
+  "grid": {
+    "crs": "EPSG:32635",
+    "resolution": 10,
+    "origin": [0, 0]
+  },
+  "sentinel1": {
+  "band": "VV",
+  "drop_db": 3.0,
+  "water_db": -17.0,
+  "min_baseline_observations": 2,
+  "use_permanent_water": true,
+  "missing_water_policy": "partial"
+}
+
+}

@@ -1,0 +1,8 @@
+earthengine-api==1.7.53
+numpy==2.3.5
+rasterio==1.5.2
+shapely==2.2.0
+pyproj==3.8.0
+Pillow==13.0.0
+requests==2.34.2
+pytest==9.2.0
