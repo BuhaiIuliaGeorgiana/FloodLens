@@ -1,0 +1,197 @@
+[
+  {
+    "absolute_orbit": 55058,
+    "acquired_at": "2024-08-04T04:13:41.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240804T041341_20240804T041406_055058_06B532_DD90",
+    "datatake": 439602,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 36,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55080,
+    "acquired_at": "2024-08-05T16:01:15.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240805T160115_20240805T160140_055080_06B602_8F0C",
+    "datatake": 439810,
+    "direction": "ASCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 58,
+    "slice": 15
+  },
+  {
+    "absolute_orbit": 55131,
+    "acquired_at": "2024-08-09T04:21:49.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240809T042149_20240809T042214_055131_06B7E6_6EFA",
+    "datatake": 440294,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 109,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55233,
+    "acquired_at": "2024-08-16T04:13:40.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240816T041340_20240816T041405_055233_06BB95_9E06",
+    "datatake": 441237,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 36,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55255,
+    "acquired_at": "2024-08-17T16:01:15.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240817T160115_20240817T160140_055255_06BC64_EA25",
+    "datatake": 441444,
+    "direction": "ASCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 58,
+    "slice": 15
+  },
+  {
+    "absolute_orbit": 55306,
+    "acquired_at": "2024-08-21T04:21:50.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240821T042150_20240821T042215_055306_06BE43_3D37",
+    "datatake": 441923,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 109,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55408,
+    "acquired_at": "2024-08-28T04:13:41.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240828T041341_20240828T041406_055408_06C209_B1F0",
+    "datatake": 442889,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 36,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55430,
+    "acquired_at": "2024-08-29T16:01:15.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240829T160115_20240829T160140_055430_06C2DC_A9E6",
+    "datatake": 443100,
+    "direction": "ASCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 58,
+    "slice": 15
+  },
+  {
+    "absolute_orbit": 55481,
+    "acquired_at": "2024-09-02T04:21:50.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240902T042150_20240902T042215_055481_06C4C3_F4DF",
+    "datatake": 443587,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 109,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55583,
+    "acquired_at": "2024-09-09T04:13:41.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240909T041341_20240909T041406_055583_06C8D2_2CBE",
+    "datatake": 444626,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 36,
+    "slice": 8
+  },
+  {
+    "absolute_orbit": 55605,
+    "acquired_at": "2024-09-10T16:01:15.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240910T160115_20240910T160140_055605_06C9B1_2B02",
+    "datatake": 444849,
+    "direction": "ASCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 58,
+    "slice": 15
+  },
+  {
+    "absolute_orbit": 55605,
+    "acquired_at": "2024-09-10T16:01:15.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240910T160115_20240910T160140_055605_06C9B1_7585",
+    "datatake": 444849,
+    "direction": "ASCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 58,
+    "slice": 15
+  },
+  {
+    "absolute_orbit": 55656,
+    "acquired_at": "2024-09-14T04:21:50.000000Z",
+    "asset_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240914T042150_20240914T042215_055656_06CBAD_ACFC",
+    "datatake": 445357,
+    "direction": "DESCENDING",
+    "mode": "IW",
+    "platform": "A",
+    "polarizations": [
+      "VV",
+      "VH"
+    ],
+    "relative_orbit": 109,
+    "slice": 8
+  }
+]

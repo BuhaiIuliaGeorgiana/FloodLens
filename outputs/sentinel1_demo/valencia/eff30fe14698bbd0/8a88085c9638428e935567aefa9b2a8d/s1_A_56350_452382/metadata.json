@@ -1,0 +1,368 @@
+{
+  "observation_id": "s1_A_56350_452382",
+  "acquired_at": "2024-10-31T18:02:56.000000Z",
+  "scene_ids": [
+    "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20241031T180256_20241031T180321_056350_06E71E_479F"
+  ],
+  "baseline_scene_ids": [
+    "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240925T180255_20240925T180320_055825_06D25C_830A",
+    "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20241007T180256_20241007T180321_056000_06D943_D46B",
+    "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20241019T180256_20241019T180321_056175_06E02E_2D52"
+  ],
+  "scene_acquisitions": [
+    {
+      "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20241031T180256_20241031T180321_056350_06E71E_479F",
+      "acquired_at": "2024-10-31T18:02:56.000000Z"
+    }
+  ],
+  "baseline_acquisitions": [
+    {
+      "observation_id": "s1_A_55825_447068",
+      "acquired_at": "2024-09-25T18:02:55.000000Z"
+    },
+    {
+      "observation_id": "s1_A_56000_448835",
+      "acquired_at": "2024-10-07T18:02:56.000000Z"
+    },
+    {
+      "observation_id": "s1_A_56175_450606",
+      "acquired_at": "2024-10-19T18:02:56.000000Z"
+    }
+  ],
+  "discarded_duplicate_scene_ids": [],
+  "comparison": {
+    "mode": "IW",
+    "relative_orbit": 103,
+    "direction": "ASCENDING",
+    "polarizations": [
+      "VH",
+      "VV"
+    ],
+    "platform": "A"
+  },
+  "layers": [
+    {
+      "layer_type": "flood_mask",
+      "format": "geotiff",
+      "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\flood_mask.tif",
+      "bounds": [
+        -0.4311086659761473,
+        39.409037817698504,
+        -0.3888751546374309,
+        39.440918279733644
+      ],
+      "crs": "EPSG:32630",
+      "bounds_crs": "EPSG:4326"
+    },
+    {
+      "layer_type": "flood_mask_raw",
+      "format": "geotiff",
+      "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\flood_mask_raw.tif",
+      "bounds": [
+        -0.4311086659761473,
+        39.409037817698504,
+        -0.3888751546374309,
+        39.440918279733644
+      ],
+      "crs": "EPSG:32630",
+      "bounds_crs": "EPSG:4326"
+    },
+    {
+      "layer_type": "quality_flags",
+      "format": "geotiff",
+      "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\quality_flags.tif",
+      "bounds": [
+        -0.4311086659761473,
+        39.409037817698504,
+        -0.3888751546374309,
+        39.440918279733644
+      ],
+      "crs": "EPSG:32630",
+      "bounds_crs": "EPSG:4326"
+    },
+    {
+      "layer_type": "flood_extent",
+      "format": "geojson",
+      "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\flood_extent.geojson",
+      "bounds": [
+        -0.4311086659761473,
+        39.409037817698504,
+        -0.3888751546374309,
+        39.440918279733644
+      ],
+      "crs": "EPSG:4326",
+      "bounds_crs": "EPSG:4326"
+    },
+    {
+      "layer_type": "valid_coverage",
+      "format": "geojson",
+      "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\valid_coverage.geojson",
+      "bounds": [
+        -0.4311086659761473,
+        39.409037817698504,
+        -0.3888751546374309,
+        39.440918279733644
+      ],
+      "crs": "EPSG:4326",
+      "bounds_crs": "EPSG:4326"
+    },
+    {
+      "layer_type": "satellite_image",
+      "format": "png",
+      "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\radar_vv.png",
+      "bounds": [
+        -0.4311086659761472,
+        39.40903781769849,
+        -0.3888751546374309,
+        39.44091827973364
+      ],
+      "crs": "EPSG:3857",
+      "bounds_crs": "EPSG:4326",
+      "band": "VV",
+      "display_range_db": [
+        -25,
+        0
+      ]
+    }
+  ],
+  "status": "partial",
+  "reason": "No observation-specific radar shadow/layover mask supplied; slope masking does not replace it. Water reference is incomplete; known water is excluded, but radar-valid pixels without a reference remain unscreened under partial policy. See quality_flags.tif. Analysis does not cover the entire AOI; missing/excluded pixels must remain unknown.",
+  "quality": {
+    "valid_coverage_pct": 84.43669948592837,
+    "warnings": [
+      "Experimental open-water change detector; thresholds are not validated universally.",
+      "Urban flooding and water beneath vegetation can be missed; bright double-bounce flooding is not detected.",
+      "Wind, soil moisture, farming and speckle can cause false detections or missed flooding.",
+      "10 m grid spacing is not 10 m effective radar resolution.",
+      "Earth Engine GRD is calibrated terrain-corrected sigma0 in dB, not radiometrically terrain-flattened data.",
+      "Processing coverage is not detection accuracy; urban and vegetated pixels remain difficult even when radar is valid.",
+      "JRC yearly water is a historical 30 m reference; it can miss new water bodies and seasonal water.",
+      "Copernicus DEM is a surface model including buildings and vegetation; slope exclusion may remove urban pixels.",
+      "Filtering can remove small or narrow flooded features; compare raw and cleaned masks. Filter settings require validation.",
+      "No observation-specific radar shadow/layover mask supplied; slope masking does not replace it.",
+      "Water reference is incomplete; known water is excluded, but radar-valid pixels without a reference remain unscreened under partial policy. See quality_flags.tif.",
+      "Analysis does not cover the entire AOI; missing/excluded pixels must remain unknown."
+    ],
+    "threshold": {
+      "requested_method": "fixed",
+      "used_method": "fixed",
+      "water_db": -17.0,
+      "drop_db": 3.0,
+      "accepted_tiles": [],
+      "fallback_reason": null,
+      "estimation_domain": "valid pixels inside requested AOI; no spatial buffer"
+    },
+    "exclusion_counts": {
+      "missing_radar": 0,
+      "insufficient_baseline": 0,
+      "angle_mismatch": 0,
+      "water_reference_missing": 114650,
+      "water_excluded": 0,
+      "slope_excluded_or_missing": 17862,
+      "shadow_excluded_or_missing": 0,
+      "shadow_not_screened": 114770,
+      "water_not_requested": 0,
+      "small_patch_removed": 6
+    },
+    "counts_note": "Independent counts overlap; warning bits do not necessarily exclude a pixel.",
+    "remaining_pixels_after_checks": {
+      "aoi": 114770,
+      "missing_radar": 114770,
+      "insufficient_baseline": 114770,
+      "angle_mismatch": 114770,
+      "water_reference_missing": 114770,
+      "water_excluded": 114770,
+      "slope_excluded_or_missing": 96908,
+      "shadow_excluded_or_missing": 96908
+    },
+    "water_class_counts_on_grid": {
+      "0": 0,
+      "1": 114,
+      "2": 6,
+      "3": 0
+    },
+    "water_nonfinite_pixels_on_grid": 114650,
+    "water_screened_valid_pixel_count": 112,
+    "water_unscreened_valid_pixel_count": 96796,
+    "raw_potential_flood_pixel_count": 181,
+    "removed_small_patch_pixel_count": 6,
+    "potential_flood_area_ha": 1.75,
+    "quality_bits": {
+      "outside_aoi": 1,
+      "missing_radar": 2,
+      "insufficient_baseline": 4,
+      "angle_mismatch": 8,
+      "water_reference_missing": 16,
+      "water_excluded": 32,
+      "slope_excluded_or_missing": 64,
+      "shadow_excluded_or_missing": 128,
+      "shadow_not_screened": 256,
+      "water_not_requested": 512,
+      "small_patch_removed": 1024
+    },
+    "filters": {
+      "permanent_water": {
+        "requested": true,
+        "applied": true,
+        "fully_screened_aoi": false,
+        "reference_coverage_pct": 0.1045569399668903,
+        "policy": "partial"
+      },
+      "slope": {
+        "applied": true,
+        "max_degrees": 5.0
+      },
+      "shadow": {
+        "applied": false
+      },
+      "speckle": {
+        "method": "lee",
+        "window": 5,
+        "enl": 4.4
+      },
+      "patch": {
+        "min_area_m2": 300.0,
+        "connectivity": 4
+      }
+    },
+    "meets_min_coverage": true,
+    "coverage_denominator": "AOI grid cells, including excluded permanent water and terrain",
+    "valid_pixel_count": 96908,
+    "potential_flood_pixel_count": 175,
+    "shadow_mask_path": null
+  },
+  "effective_settings": {
+    "band": "VV",
+    "drop_db": 3.0,
+    "water_db": -17.0,
+    "min_baseline_observations": 2,
+    "max_angle_difference": 2.0,
+    "max_slope_degrees": 5.0,
+    "exclude_seasonal_water": false,
+    "min_coverage_pct": 20.0,
+    "max_pixels": 5000000,
+    "use_permanent_water": true,
+    "use_dem": true,
+    "shadow_masks": {},
+    "missing_water_policy": "partial",
+    "speckle_filter": "lee",
+    "lee_window": 5,
+    "lee_enl": 4.4,
+    "min_patch_area_m2": 300.0,
+    "threshold_method": "fixed",
+    "tile_size": 128,
+    "min_tile_pixels": 256,
+    "min_threshold_tiles": 3,
+    "otsu_min_separability": 0.65,
+    "otsu_min_class_fraction": 0.05,
+    "otsu_min_separation_db": 3.0,
+    "adaptive_min_db": -25.0,
+    "adaptive_max_db": -10.0,
+    "water_reference_year": 2021
+  },
+  "metadata_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1_demo\\valencia\\eff30fe14698bbd0\\8a88085c9638428e935567aefa9b2a8d\\s1_A_56350_452382\\metadata.json",
+  "configuration": {
+    "dates": {
+      "baseline_start": "2024-09-15T00:00:00.000000Z",
+      "event_start": "2024-10-29T14:30:00.000000Z",
+      "search_end": "2024-11-06T00:00:00.000000Z"
+    },
+    "aoi": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            -0.43,
+            39.41
+          ],
+          [
+            -0.39,
+            39.41
+          ],
+          [
+            -0.39,
+            39.44
+          ],
+          [
+            -0.43,
+            39.44
+          ],
+          [
+            -0.43,
+            39.41
+          ]
+        ]
+      ]
+    },
+    "grid": {
+      "crs": "EPSG:32630",
+      "resolution": 10,
+      "origin": [
+        0.0,
+        0.0
+      ]
+    },
+    "sentinel1": {
+      "band": "VV",
+      "drop_db": 3.0,
+      "water_db": -17.0,
+      "min_baseline_observations": 2,
+      "max_angle_difference": 2.0,
+      "max_slope_degrees": 5.0,
+      "exclude_seasonal_water": false,
+      "min_coverage_pct": 20.0,
+      "max_pixels": 5000000,
+      "use_permanent_water": true,
+      "use_dem": true,
+      "shadow_masks": {},
+      "missing_water_policy": "partial",
+      "speckle_filter": "lee",
+      "lee_window": 5,
+      "lee_enl": 4.4,
+      "min_patch_area_m2": 300.0,
+      "threshold_method": "fixed",
+      "tile_size": 128,
+      "min_tile_pixels": 256,
+      "min_threshold_tiles": 3,
+      "otsu_min_separability": 0.65,
+      "otsu_min_class_fraction": 0.05,
+      "otsu_min_separation_db": 3.0,
+      "adaptive_min_db": -25.0,
+      "adaptive_max_db": -10.0,
+      "water_reference_year": 2021
+    },
+    "date_boundaries": "baseline=[baseline_start,event_start); observations=[event_start,search_end), UTC",
+    "source_collection": "COPERNICUS/S1_GRD",
+    "baseline_statistic": "median linear power converted to dB",
+    "resampling": "nearest",
+    "spatial_speckle_filter": {
+      "method": "lee",
+      "window_pixels": 5,
+      "enl": 4.4,
+      "domain": "linear power, per acquisition before baseline median"
+    },
+    "minimum_patch_area_m2": 300.0,
+    "output_mask_values": {
+      "0": "no_detection",
+      "1": "potential_flood",
+      "255": "unknown_or_excluded"
+    },
+    "water_asset": "JRC/GSW1_4/YearlyHistory",
+    "dem_asset": "COPERNICUS/DEM/GLO30_2024_1"
+  },
+  "analysis_grid": {
+    "crs": "EPSG:32630",
+    "transform": [
+      10.0,
+      0.0,
+      721170.0,
+      0.0,
+      -10.0,
+      4368860.0
+    ],
+    "width": 354,
+    "height": 344,
+    "pixel_inclusion": "centre inside AOI"
+  },
+  "pipeline_version": "0.2.0"
+}

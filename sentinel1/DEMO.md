@@ -2,7 +2,7 @@
 
 This separate Streamlit page calls the real `process_sentinel1(event, output_dir)` function. It is a local teaching/demo tool, not the shared React map or a deployment on Netlify. No database writes, scheduling, uploads, EMS comparisons or exposure calculations are included.
 
-Copy the additional files into the existing `sentinel1` directory. Keep the pipeline files; the demo requires version 0.1.1 with the water-reference fallback.
+Use all package files from the version 0.3.0 archive together, including `analysis.py` and the updated requirements. Back up your existing folder before replacing matching files; keep any personal notebooks.
 
 From the repository root in PowerShell:
 
@@ -25,7 +25,7 @@ Enter the authorized project ID in the form. The default is the project used in 
 
 1. Start with the included Pechea event values. Explain that they are example inputs, not fixed processing parameters.
 2. Show event ID, polygon and UTC dates. End dates are exclusive. Change search_end for an ongoing event; an after scene is not needed.
-3. Show the shared projected CRS, 10 m grid origin, thresholds and missing-water policy. Choose a suitable CRS for other regions.
+3. Show the shared projected CRS, 10 m grid origin, thresholds, Lee filter, minimum patch area and missing-water policy. Tile Otsu is selected by default with a 2000 m sampling buffer; it records fallback when suitable samples are unavailable. Outputs are cropped to the original AOI. Choose a suitable CRS for other regions.
 4. Click Run Sentinel-1. The form calls the actual Python function once on submission. Changing the displayed observation or downloading a file does not call it again.
 5. Show status, coverage, acquisition dates, radar preview, flood-mask preview and downloadable analytical layers. The mask preview is a pixel view, not an interactive geographic basemap. Quality warnings remain visible; partial does not mean validated flooding.
 6. Open Exact function input and download the returned JSON. Your teammate will replace this form with the real event creation flow and handle storage/upload outside this function.
@@ -34,4 +34,6 @@ Output folders are relative to the repository root unless an absolute path is su
 
 Comments in the Python file are in Romanian. The interface is in English to match the current app. `st.form` collects the inputs; `st.form_submit_button` triggers processing; `st.session_state` preserves the returned dictionary across UI interactions; `st.download_button` exposes the already-generated files.
 
-UI verification uses Streamlit AppTest with mocked Earth Engine initialization and pipeline results. It does not run satellite processing or establish flood accuracy. The underlying pipeline has a separately verified live run in this conversation.
+UI verification uses Streamlit AppTest with mocked Earth Engine access and synthetic radar arrays through the real local pipeline. Version 0.3.0 has not been run against live Earth Engine here. Earlier versions 0.1.1 and 0.2.0 were run by the user; that does not validate the new filters or server execution.
+
+The demo also displays per-band counts, both radar previews and masks, VV/VH comparison colours and a spatial urban/vegetation context preview. Agreement is not accuracy. Downloads are identified by layer type, band and format to avoid duplicate UI keys.
