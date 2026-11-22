@@ -8,7 +8,11 @@ import {
 } from "react-leaflet";
 
 import { supabase } from "../config/supabase";
+import { polygonLeafletBounds } from "../utils/geo";
 import "leaflet/dist/leaflet.css";
+
+// Used only when an event has no zone saved
+const DEFAULT_BOUNDS = [[43.6, 20.2], [48.3, 29.7]];
 
 // One color per EMS date, from the earliest to the latest
 const EMS_COLORS = ["#f4a261", "#d62828", "#6a0dad", "#2a9d8f"];
@@ -88,7 +92,7 @@ function getImageLabel(layer) {
         formatDate(layer.acquired_at),
     ].filter(Boolean).join(" — ");
 }
-function EventMap({ roadsLayer, emsLayers, imageLayers = [] }){
+function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
     const [roads,setRoads] = useState(null);
     const [floods,setFloods] = useState([]);
     const [loading,setLoading] = useState(true);
@@ -163,17 +167,36 @@ function EventMap({ roadsLayer, emsLayers, imageLayers = [] }){
             )}
 
             <MapContainer
-                bounds={[[45.58,27.74],[45.68,27.86]]}
+                bounds={polygonLeafletBounds(aoi) ?? DEFAULT_BOUNDS}
                 scrollWheelZoom={false}
                 style={{height: "450px", width: "100%"}}
             >
                 <TileLayer
-                    attribution='&copy; OpenStreetMap contributors | Flood data &copy; Copernicus EMS (EMSR758)'
+                    attribution={
+                        floods.length > 0
+                            ? "&copy; OpenStreetMap contributors | Flood data &copy; Copernicus EMS"
+                            : "&copy; OpenStreetMap contributors"
+                    }
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
                 {/* Checkboxes to show or hide each layer */}
                 <LayersControl position="topright" collapsed={false}>
+
+                    {/* Zone selected when the event was created */}
+                    {aoi && (
+                        <LayersControl.Overlay name="Event zone" checked>
+                            <GeoJSON
+                                data={aoi}
+                                style={{
+                                    color: "#333",
+                                    weight: 2,
+                                    dashArray: "6 4",
+                                    fill: false
+                                }}
+                            />
+                        </LayersControl.Overlay>
+                    )}
 
                     {/* Satellite image previews: Sentinel-1 and Sentinel-2 */}
                     {imageLayers.map((layer) => {
@@ -244,10 +267,12 @@ function EventMap({ roadsLayer, emsLayers, imageLayers = [] }){
                 </LayersControl>
             </MapContainer>
 
-            <p>
-                Blue lines represent mapped roads,
-                not confirmed flood damage.
-            </p>
+            {roads && (
+                <p>
+                    Blue lines represent mapped roads,
+                    not confirmed flood damage.
+                </p>
+            )}
 
             {imageLayers.length > 0 && (
                 <p>
