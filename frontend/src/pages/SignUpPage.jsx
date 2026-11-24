@@ -1,5 +1,7 @@
-import { Link , useNavigate} from "react-router";
+import { Link , useNavigate, useLocation, Navigate} from "react-router";
 import {useState} from "react";
+import { useAuth } from "../hooks/useAuth";
+import { safeReturnPath } from "../utils/eventInput";
 import {register} from "../services/authService";
 function SignUpPage(){
     const [email,setEmail] = useState("");
@@ -10,6 +12,9 @@ function SignUpPage(){
     const [loading,setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const location=useLocation();
+    const {user}=useAuth();
+    const next=safeReturnPath(location.state?.from);
     async function handleSignUp(event){
         event.preventDefault();
 
@@ -37,7 +42,7 @@ function SignUpPage(){
             //session checking
 
             if(result.data.session){
-                navigate("/");
+                navigate(next, {replace:true});
             }else{
                 setMessage("Check email confirmation link.");
             }
@@ -47,6 +52,7 @@ function SignUpPage(){
             setLoading(false);
         }
     }
+    if(user) return <Navigate to={next} replace/>;
     return(
         <div>
             <h1>Welcome</h1>
@@ -77,12 +83,12 @@ function SignUpPage(){
 
                 {error && <p role = "alert">{error}</p>}
 
-                <button type = "submit">Sign up</button>
+                <button type = "submit" disabled={loading}>Sign up</button>
             </form>
 
             <p>
                 Already have an account?
-                <Link to="/login" disabled = {loading} >
+                <Link to="/login" state={{from:next}}>
                 {loading ? "Logging in.." : "Log in"}
                 </Link>
 

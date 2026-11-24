@@ -59,13 +59,16 @@ def build_stack(event, observation, baseline, grid, options):
     band = options["band"]
     # Proiectam fiecare trecere inainte de calculul statisticilor.
     def aligned(obs):
-        return mosaic(obs, band).reproject(crs=grid["crs"], crsTransform=list(grid["transform"])[:6])
+        image = mosaic(obs, band).reproject(crs=grid["crs"], crsTransform=list(grid["transform"])[:6])
+        if options["speckle_filter"] == "lee":
+            image = lee_filter(image, band, options["lee_window"], options["lee_enl"])
+        return image
 
     old = ee.ImageCollection.fromImages([aligned(obs) for obs in baseline])
     current = aligned(observation)
 
     def power(image):
-        return ee.Image.constant(10).pow(image.select(band).divide(10)).rename("power")
+        return image.select(band).multiply(np.log(10) / 10).exp().rename("power")
 
     # Mediana puterii liniare se transforma inapoi in dB.
     before = old.map(power).median().log10().multiply(10).rename("baseline_db")
@@ -87,9 +90,24 @@ def build_stack(event, observation, baseline, grid, options):
             .addBands(water).addBands(slope).toFloat().unmask(NODATA, False))
 
 
-def download_stack(image, grid):
+def lee_filter(image, band, window, enl):
+    """Lee simplificat in putere liniara, separat pentru fiecare trecere."""
+    power = image.select(band).multiply(np.log(10) / 10).exp()
+    kernel = ee.Kernel.square(radius=window // 2, units="pixels", normalize=False)
+    mean = power.reduceNeighborhood(ee.Reducer.mean(), kernel, skipMasked=True)
+    variance = power.reduceNeighborhood(ee.Reducer.variance(), kernel, skipMasked=True)
+    noise = mean.pow(2).divide(enl)
+    weight = variance.subtract(noise).divide(variance.max(1e-12)).clamp(0, 1)
+    filtered = mean.add(weight.multiply(power.subtract(mean)))
+    # Nu completam golurile din imagine cu vecini disponibili.
+    db = filtered.max(1e-12).log10().multiply(10).rename(band)
+    db = db.unmask(image.select(band)).updateMask(image.select(band).mask())
+    return image.addBands(db, overwrite=True)
+
+
+def download_stack(image, grid, band_count=7):
     """Descarcam dale mici pe exact aceeasi grila."""
-    array = np.full((7, grid["height"], grid["width"]), np.nan, dtype="float32")
+    array = np.full((band_count, grid["height"], grid["width"]), np.nan, dtype="float32")
     retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
     with requests.Session() as session:
         session.mount("https://", HTTPAdapter(max_retries=retries))
@@ -107,7 +125,7 @@ def download_stack(image, grid):
                 response = session.get(url, timeout=(30, 180))
                 response.raise_for_status()
                 with MemoryFile(response.content) as memory, memory.open() as src:
-                    if (src.count != 7 or src.width != width or src.height != height
+                    if (src.count != band_count or src.width != width or src.height != height
                             or src.crs.to_string() != grid["crs"]
                             or not src.transform.almost_equals(affine)):
                         raise ValueError("Earth Engine returned an unexpected grid")
@@ -115,3 +133,20 @@ def download_stack(image, grid):
                     tile[tile == NODATA] = np.nan
                     array[:, row:row + height, col:col + width] = tile
     return array
+
+
+def landcover_source(event_start):
+    """Folosim numai ani completi anteriori evenimentului."""
+    year = int(event_start[:4])
+    if year >= 2022:
+        return {"asset": "ESA/WorldCover/v200", "reference_year": 2021}
+    if year == 2021:
+        return {"asset": "ESA/WorldCover/v100", "reference_year": 2020}
+    return {"asset": None, "reference_year": None}
+
+
+def download_landcover(source, grid):
+    image = ee.ImageCollection(source["asset"]).first().select("Map")
+    # Clasele se resampleaza cu vecinul cel mai apropiat, nu prin interpolare.
+    image = image.reproject(crs=grid["crs"], crsTransform=list(grid["transform"])[:6])
+    return download_stack(image.toFloat().unmask(NODATA, False), grid, band_count=1)[0]

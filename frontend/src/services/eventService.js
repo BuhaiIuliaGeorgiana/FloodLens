@@ -10,7 +10,8 @@ const EVENT_FIELDS = `
     ended_at,
     aoi_geojson,
     visibility,
-    created_by
+    created_by,
+    company_id
 `;
 
 export async function getEventBySlug(slug){
@@ -44,12 +45,11 @@ export async function getEventBySlug(slug){
 }
 
 // RLS returns public events plus the user's own private ones
-export async function listEvents(){
+export async function listEvents(companyId = null){
 
-    const {data,error} = await supabase
-        .from("flood_events")
-        .select(EVENT_FIELDS)
-        .order("started_at", {ascending: false});
+    let query = supabase.from("flood_events").select(EVENT_FIELDS).order("started_at", {ascending:false});
+    if(companyId) query = query.eq("company_id",companyId);
+    const {data,error} = await query;
 
     if(error){
         throw error;
@@ -72,47 +72,17 @@ export function makeSlug(title, startDate){
     return `${name || "event"}-${startDate}`;
 }
 
-// The start date is picked as a local (Romanian) calendar day and stored
-// as local midnight in UTC, the same way the Pechea event was entered
+// Zilele introduse in formular reprezinta miezul noptii UTC.
 export function localDayToIso(startDate){
-    const [year, month, day] = startDate.split("-").map(Number);
-
-    return new Date(year, month - 1, day).toISOString();
+    return new Date(`${startDate}T00:00:00Z`).toISOString();
 }
 
-export async function createEvent({ title, startDate, endDate, locality, county, aoi, isPrivate }){
-    const baseSlug = makeSlug(title, startDate);
-
-    const row = {
-        title: title.trim(),
-        started_at: localDayToIso(startDate),
-        // Empty end date = ongoing event
-        ended_at: endDate ? localDayToIso(endDate) : null,
-        locality: locality.trim() || null,
-        county: county.trim() || null,
-        aoi_geojson: aoi,
-        visibility: isPrivate ? "private" : "public",
-    };
-
-    // Retry with a numeric suffix if the slug is already taken
-    for(let attempt = 1; attempt <= 5; attempt++){
-        const slug = attempt === 1 ? baseSlug : `${baseSlug}-${attempt}`;
-
-        const {data,error} = await supabase
-            .from("flood_events")
-            .insert({ ...row, slug })
-            .select("id, slug")
-            .single();
-
-        if(!error){
-            return data;
-        }
-
-        // 23505 = unique_violation (slug already exists)
-        if(error.code !== "23505"){
-            throw error;
-        }
-    }
-
-    throw new Error("Could not generate a unique slug for this event.");
+export async function createEvent({title,startDate,endDate,locality,county,aoi,companyId}) {
+    const {data,error} = await supabase.rpc("fl_create_event", {p_event:{
+        title:title.trim(), company_id:companyId || null,
+        event_start:localDayToIso(startDate), ended_at:endDate ? localDayToIso(endDate) : null,
+        locality:locality.trim(), county:county.trim(), aoi,
+    }});
+    if(error) throw error;
+    return data;
 }
