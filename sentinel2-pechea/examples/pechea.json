@@ -1,0 +1,17 @@
+{
+  "id": "pechea_flood_2024_09",
+  "name": "Pechea, Galați Flood Event (September 2024)",
+  "geometry_type": "BBOX",
+  "geometry": [27.74, 45.58, 27.86, 45.68],
+  "before_start": "2024-08-15",
+  "before_end": "2024-09-14",
+  "during_start": "2024-09-14",
+  "during_end": "2024-09-20",
+  "crs": "EPSG:32635",
+  "scale": 10,
+  "max_cloud_cover": 80,
+  "thresholds": {
+    "mndwi_water_threshold": 0.1,
+    "mndwi_min_increase": 0.2
+  }
+}
