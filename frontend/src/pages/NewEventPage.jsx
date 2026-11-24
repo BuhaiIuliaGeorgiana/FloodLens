@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router";
 
 import AoiDrawMap from "../components/AoiDrawMap";
 import { createEvent } from "../services/eventService";
+import { useCompany } from "../hooks/useCompany";
 import { polygonAreaKm2 } from "../utils/geo";
 
 // Keep the zone small enough for the S1/S2/OSM processing
-const MAX_AREA_KM2 = 500;
+const MAX_AREA_KM2 = 250;
 
 // Today's date as YYYY-MM-DD in local time, for the date picker limit
 function todayLocal(){
@@ -22,7 +23,8 @@ function NewEventPage(){
     const [endDate,setEndDate] = useState("");
     const [locality,setLocality] = useState("");
     const [county,setCounty] = useState("");
-    const [isPrivate,setIsPrivate] = useState(false);
+    const {company,loading:companyLoading}=useCompany();
+    const [forCompany,setForCompany]=useState(true);
     const [aoi,setAoi] = useState(null);
     const [error,setError] = useState("");
     const [saving,setSaving] = useState(false);
@@ -65,7 +67,7 @@ function NewEventPage(){
                 locality,
                 county,
                 aoi,
-                isPrivate,
+                companyId:forCompany ? company?.id : null,
             });
 
             navigate(`/events/${created.slug}`);
@@ -78,7 +80,7 @@ function NewEventPage(){
 
     return(
         <main>
-            <p><Link to="/">← Back to events</Link></p>
+            <p><Link to="/dashboard">Back to dashboard</Link></p>
 
             <h1>New flood event</h1>
 
@@ -94,7 +96,7 @@ function NewEventPage(){
                 </div>
 
                 <div>
-                    <label htmlFor="startDate">Flood start date:</label>
+                    <label htmlFor="startDate">Flood start date (UTC):</label>
                     <input  id="startDate"
                             type="date"
                             value={startDate}
@@ -131,15 +133,8 @@ function NewEventPage(){
                             />
                 </div>
 
-                <div>
-                    <label>
-                        <input  type="checkbox"
-                                checked={isPrivate}
-                                onChange={(e)=>setIsPrivate(e.target.checked)}
-                                />
-                        Private (only visible to me)
-                    </label>
-                </div>
+                {company && <label><input type="checkbox" checked={forCompany} onChange={e=>setForCompany(e.target.checked)}/>Eveniment pentru {company.name}</label>}
+                <p>{company && forCompany ? "Vizibil doar membrilor firmei." : "Eveniment personal, privat."}</p>
 
                 <section style={{maxWidth: "750px", margin: "20px 0"}}>
                     <h2>Affected zone</h2>
@@ -158,7 +153,7 @@ function NewEventPage(){
                     </p>
                 </section>
 
-                <button type="submit" disabled={saving}>
+                <button type="submit" disabled={saving || companyLoading}>
                     {saving ? "Saving..." : "Create event"}
                 </button>
 

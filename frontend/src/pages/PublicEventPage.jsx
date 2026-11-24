@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router";
 import { getEventBySlug } from "../services/eventService";
 import EventMap from "../components/EventMap";
-import ProcessingPanel from "../components/ProcessingPanel";
 
 function PublicEventPage(){
     const {slug} = useParams();
@@ -45,15 +44,6 @@ function PublicEventPage(){
         };
 
     }, [slug]);
-
-    // Reload the event after a processing run ends, to show the new layers
-    async function handleRunFinished(){
-        try{
-            setEvent(await getEventBySlug(slug));
-        }catch(err){
-            setError(err.message);
-        }
-    }
 
     // Pick the map layers once per event, so the map
     // does not download the files again on every render
@@ -111,11 +101,6 @@ function PublicEventPage(){
                     : "Ongoing event"}
             </p>
             {event.visibility === "private" && <p>Private event</p>}
-
-            <ProcessingPanel
-                eventId={event.id}
-                onRunFinished={handleRunFinished}
-            />
 
             {/* Display the event zone, real roads and EMS flood zones */}
             {(event.aoi_geojson || roadsLayer || emsLayers.length > 0 || imageLayers.length > 0) && (
