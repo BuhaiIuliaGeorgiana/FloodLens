@@ -22,7 +22,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
     const {user,loading}=useAuth();
-    if(loading) return <p>Se verifică sesiunea…</p>;
+    if(loading) return <div className="grid min-h-screen place-content-center"><p className="loading">Se verifică sesiunea…</p></div>;
     return <CompanyProvider key={user?.id ?? "guest"}><Routes><Route element={<AppLayout/>}>
         <Route path="/" element={user ? <Navigate to="/home" replace/> : <IndexPage/>}/>
         <Route path="/login" element={<LoginPage/>}/>

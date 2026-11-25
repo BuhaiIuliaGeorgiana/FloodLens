@@ -5,6 +5,8 @@ import AoiDrawMap from "../components/AoiDrawMap";
 import { createEvent } from "../services/eventService";
 import { useCompany } from "../hooks/useCompany";
 import { polygonAreaKm2 } from "../utils/geo";
+import Icon from "../components/Icon";
+import PageHeader from "../components/PageHeader";
 
 // Keep the zone small enough for the S1/S2/OSM processing
 const MAX_AREA_KM2 = 250;
@@ -38,22 +40,22 @@ function NewEventPage(){
         setError("");
 
         if(!aoi){
-            setError("Draw the affected zone on the map.");
+            setError("Desenează zona afectată pe hartă.");
             return;
         }
 
         if(areaKm2 > MAX_AREA_KM2){
-            setError(`The zone is too large (max ${MAX_AREA_KM2} km²).`);
+            setError(`Zona este prea mare (max ${MAX_AREA_KM2} km²).`);
             return;
         }
 
         if(startDate > today){
-            setError("The start date cannot be in the future.");
+            setError("Data de început nu poate fi în viitor.");
             return;
         }
 
         if(endDate && endDate < startDate){
-            setError("The end date cannot be before the start date.");
+            setError("Data de sfârșit nu poate fi înaintea datei de început.");
             return;
         }
 
@@ -72,94 +74,72 @@ function NewEventPage(){
 
             navigate(`/events/${created.slug}`);
         }catch(err){
-            setError(err.message || "Could not save the event.");
+            setError(err.message || "Evenimentul nu a putut fi salvat.");
         }finally{
             setSaving(false);
         }
     }
 
     return(
-        <main>
-            <p><Link to="/dashboard">Back to dashboard</Link></p>
+        <>
+            <Link to="/dashboard" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-deep-teal"><Icon name="arrowLeft" className="size-4"/>Înapoi la dashboard</Link>
+            <PageHeader eyebrow="Eveniment nou" title="Eveniment nou de inundație"
+                description="Completează detaliile și desenează zona afectată pe hartă."/>
 
-            <h1>New flood event</h1>
-
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="title">Event name:</label>
-                    <input  id="title"
-                            value={title}
-                            onChange={(e)=>setTitle(e.target.value)}
-                            maxLength={120}
-                            required
-                            />
-                </div>
-
-                <div>
-                    <label htmlFor="startDate">Flood start date (UTC):</label>
-                    <input  id="startDate"
-                            type="date"
-                            value={startDate}
-                            max={today}
-                            onChange={(e)=>setStartDate(e.target.value)}
-                            required
-                            />
-                </div>
-
-                <div>
-                    <label htmlFor="endDate">Flood end date (optional, leave empty if ongoing):</label>
-                    <input  id="endDate"
-                            type="date"
-                            value={endDate}
-                            min={startDate || undefined}
-                            max={today}
-                            onChange={(e)=>setEndDate(e.target.value)}
-                            />
-                </div>
-
-                <div>
-                    <label htmlFor="locality">Locality (optional):</label>
-                    <input  id="locality"
-                            value={locality}
-                            onChange={(e)=>setLocality(e.target.value)}
-                            />
-                </div>
-
-                <div>
-                    <label htmlFor="county">County (optional):</label>
-                    <input  id="county"
-                            value={county}
-                            onChange={(e)=>setCounty(e.target.value)}
-                            />
-                </div>
-
-                {company && <label><input type="checkbox" checked={forCompany} onChange={e=>setForCompany(e.target.checked)}/>Eveniment pentru {company.name}</label>}
-                <p>{company && forCompany ? "Vizibil doar membrilor firmei." : "Eveniment personal, privat."}</p>
-
-                <section style={{maxWidth: "750px", margin: "20px 0"}}>
-                    <h2>Affected zone</h2>
-
-                    <p>
-                        Use the polygon or rectangle tool (top left) to draw the zone.
-                        Drawing a new zone replaces the previous one.
-                    </p>
-
-                    <AoiDrawMap onChange={setAoi}/>
-
-                    <p>
-                        {aoi
-                            ? `Zone area: ${areaKm2.toFixed(1)} km² (max ${MAX_AREA_KM2} km²)`
-                            : "No zone drawn yet."}
-                    </p>
+            <form onSubmit={handleSubmit} className="grid gap-5">
+                <section className="card">
+                    <div className="card-header"><h2 className="card-title">Detalii</h2></div>
+                    <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))]">
+                        <label htmlFor="title" className="field col-span-full">Denumire eveniment
+                            <input id="title" value={title} onChange={(e)=>setTitle(e.target.value)}
+                                maxLength={120} placeholder="ex. Inundații Pechea, septembrie 2024" required/>
+                        </label>
+                        <label htmlFor="startDate" className="field">Data de început (UTC)
+                            <input id="startDate" type="date" value={startDate} max={today}
+                                onChange={(e)=>setStartDate(e.target.value)} required/>
+                        </label>
+                        <label htmlFor="endDate" className="field">Data de sfârșit
+                            <input id="endDate" type="date" value={endDate} min={startDate || undefined} max={today}
+                                onChange={(e)=>setEndDate(e.target.value)}/>
+                            <span className="hint">Lasă gol dacă evenimentul este în desfășurare.</span>
+                        </label>
+                        <label htmlFor="locality" className="field"><span>Localitate <span className="hint">(opțional)</span></span>
+                            <input id="locality" value={locality} onChange={(e)=>setLocality(e.target.value)}/>
+                        </label>
+                        <label htmlFor="county" className="field"><span>Județ <span className="hint">(opțional)</span></span>
+                            <input id="county" value={county} onChange={(e)=>setCounty(e.target.value)}/>
+                        </label>
+                    </div>
+                    <div className="mt-5">
+                        {company && <label className="flex items-center gap-2.5 text-sm font-medium"><input type="checkbox" checked={forCompany} onChange={e=>setForCompany(e.target.checked)}/>Eveniment pentru {company.name}</label>}
+                        <p className="mt-1.5 flex items-center gap-1 text-sm text-muted"><Icon name="lock" className="size-3.5"/> {company && forCompany ? "Vizibil doar membrilor firmei." : "Eveniment personal, privat."}</p>
+                    </div>
                 </section>
 
-                <button type="submit" disabled={saving || companyLoading}>
-                    {saving ? "Saving..." : "Create event"}
-                </button>
+                <section className="card">
+                    <div className="card-header">
+                        <h2 className="card-title">Zona afectată</h2>
+                        <span className={`badge ${!aoi ? "badge-muted" : areaKm2 > MAX_AREA_KM2 ? "badge-danger" : "badge-success"}`}>
+                            {aoi ? `${areaKm2.toFixed(1)} km² / max ${MAX_AREA_KM2} km²` : "Nicio zonă desenată"}
+                        </span>
+                    </div>
+                    <p className="mb-4 text-sm text-muted">
+                        Folosește instrumentul poligon sau dreptunghi (stânga sus) pentru a desena zona.
+                        O zonă nouă o înlocuiește pe cea anterioară.
+                    </p>
+                    <div className="overflow-hidden rounded-xl border border-line"><AoiDrawMap onChange={setAoi}/></div>
+                </section>
 
                 {error && <p role="alert">{error}</p>}
+
+                <div className="flex flex-wrap gap-2.5">
+                    <button type="submit" className="btn btn-lg" disabled={saving || companyLoading}>
+                        {saving ? "Se salvează…" : "Creează evenimentul"}
+                    </button>
+                    <Link to="/dashboard" className="btn btn-lg btn-secondary">Anulează</Link>
+                </div>
             </form>
-        </main>
+        </>
     );
 }
 
