@@ -1,0 +1,16 @@
+{
+  "event_id": "dev-pechea",
+  "source": "sentinel1",
+  "observation_date": "2024-09-15",
+  "flood_detected": true,
+  "buildings_exposed": 5681,
+  "buildings_mostly_flooded": 5642,
+  "mostly_flooded_threshold_pct": 50,
+  "buildings_total": 11780,
+  "roads_exposed_km": 46.56,
+  "roads_real_exposed_km": 45.78,
+  "roads_total_km": 154.5,
+  "flooded_area_ha": 1387.06,
+  "valid_area_ha": null,
+  "note": "Potential exposure at 10 m resolution, not confirmed damage."
+}

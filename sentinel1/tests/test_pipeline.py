@@ -14,6 +14,13 @@ from sentinel1 import earth_engine as backend
 from sentinel1.outputs import read_shadow
 
 
+@pytest.fixture(autouse=True)
+def legacy_mode(monkeypatch):
+    # Verificarile vechi izoleaza fluxul cu o singura polarizare.
+    monkeypatch.setitem(DEFAULTS, "compare_bands", False)
+    monkeypatch.setitem(DEFAULTS, "use_landcover", False)
+
+
 @pytest.fixture
 def event():
     return {"event_id": "test-event", "aoi": {"type": "Polygon", "coordinates": [
@@ -137,7 +144,7 @@ def test_export_roundtrip_and_rerun(event, tmp_path, monkeypatch):
     obs = result["observations"][0]
     assert len(obs["baseline_scene_ids"]) == 2
     assert obs["quality"]["valid_coverage_pct"] == 100
-    assert len(obs["layers"]) == 4
+    assert len(obs["layers"]) == 6
     paths = {layer["format"] + layer["layer_type"]: layer["local_path"] for layer in obs["layers"]}
     with rasterio.open(paths["geotiff" + "flood_mask"]) as src:
         assert src.nodata == 255 and src.res == (10, 10)
@@ -232,6 +239,7 @@ def test_earth_engine_graph_builds_without_network(event, monkeypatch):
         assert "COPERNICUS/S1_GRD" in serialized
         assert "JRC/GSW1_4/YearlyHistory" in serialized
         assert "Image.reproject" in serialized
+        assert "Image.reduceNeighborhood" in serialized
     finally:
         ee.Reset()
 
@@ -301,10 +309,10 @@ def test_missing_water_policy(event, tmp_path, monkeypatch, policy, expected):
         assert np.all(src.read(1)[0] == 255)
     if policy == "partial":
         assert obs["quality"]["valid_pixel_count"] > 0
-        assert obs["effective_settings"]["use_permanent_water"] is False
+        assert obs["quality"]["water_unscreened_valid_pixel_count"] > 0
 
 
-def test_partially_missing_water_stays_unknown(event, tmp_path, monkeypatch):
+def test_partially_missing_water_partial_keeps_radar(event, tmp_path, monkeypatch):
     fake_backend(monkeypatch, records())
     def patchy_water(image, grid):
         stack = data(grid)
@@ -314,4 +322,33 @@ def test_partially_missing_water_stays_unknown(event, tmp_path, monkeypatch):
     result = process_sentinel1(event, str(tmp_path))
     obs = result["observations"][0]
     assert obs["effective_settings"]["use_permanent_water"] is True
-    assert 0 < obs["quality"]["valid_coverage_pct"] < 100
+    assert obs["quality"]["valid_coverage_pct"] == 100
+    assert 0 < obs["quality"]["filters"]["permanent_water"]["reference_coverage_pct"] < 100
+
+
+def test_quality_export_and_cleaned_vector_roundtrip(event, tmp_path, monkeypatch):
+    from rasterio.features import rasterize
+    from rasterio.warp import transform_geom
+    from sentinel1.analysis import QUALITY_BITS
+    fake_backend(monkeypatch, records())
+    def patchy(image, grid):
+        stack = data(grid)
+        stack[5, :, :grid['width']//2] = np.nan
+        stack[5, :, -1] = 3
+        return stack
+    monkeypatch.setattr(backend, 'download_stack', patchy)
+    result = process_sentinel1(event, str(tmp_path))
+    obs = result['observations'][0]
+    layers = {layer['layer_type']: layer for layer in obs['layers']}
+    with rasterio.open(layers['quality_flags']['local_path']) as src:
+        flags = src.read(1)
+        assert src.dtypes == ('uint16',)
+        assert json.loads(src.tags()['quality_bits']) == QUALITY_BITS
+        assert np.any(flags & QUALITY_BITS['water_reference_missing'])
+    with rasterio.open(layers['flood_mask']['local_path']) as src:
+        mask = src.read(1)
+        collection = json.loads(Path(layers['flood_extent']['local_path']).read_text())
+        geometries = [(transform_geom('EPSG:4326', src.crs, f['geometry']),1) for f in collection['features']]
+        restored = rasterize(geometries, out_shape=src.shape, transform=src.transform)
+        assert np.array_equal(restored == 1, mask == 1)
+    assert all(layer['bounds_crs'] == 'EPSG:4326' for layer in obs['layers'])

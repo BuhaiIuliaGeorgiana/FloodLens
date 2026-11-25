@@ -6,7 +6,7 @@ export async function register(email,password){
         email,
         password,
         options: {
-            emailRedirectTo: window.location.origin
+            emailRedirectTo: window.location.origin + (sessionStorage.getItem("floodlens_invitation") ? "/join" : "/dashboard")
         }
     });
 }

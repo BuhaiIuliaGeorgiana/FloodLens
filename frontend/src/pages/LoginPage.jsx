@@ -1,5 +1,7 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation, Navigate } from "react-router";
 import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { safeReturnPath } from "../utils/eventInput";
 import { login } from "../services/authService";
 
 function LoginPage() {
@@ -9,12 +11,15 @@ function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const location=useLocation();
+    const {user}=useAuth();
+    const next=safeReturnPath(location.state?.from);
     async function handleLogin(event){
         event.preventDefault();
 
         setLoading(true)
-        console.log("Email:", email);
-        console.log("Login form submitted");
+        setError("");
+
         
 
         try{
@@ -25,13 +30,14 @@ function LoginPage() {
                 return;
             }
 
-            navigate("/");
+            navigate(next, {replace:true});
         }catch(err){
             setError(err.message || "An unexpected error occured.");
         }finally{
             setLoading(false);
         }
     }
+    if(user) return <Navigate to={next} replace/>;
     return (
         <div>
             <h1>Login Page</h1>
@@ -61,7 +67,7 @@ function LoginPage() {
 
             <p>
                 Don't have an account?
-                <Link to="/signup">Sign up</Link>
+                <Link to="/signup" state={{from:next}}>Sign up</Link>
             </p>
         </div>
     );

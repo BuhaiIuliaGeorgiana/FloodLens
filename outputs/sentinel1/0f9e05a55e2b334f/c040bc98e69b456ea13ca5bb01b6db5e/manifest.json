@@ -1,0 +1,246 @@
+{
+  "event_id": "pechea-validation-example",
+  "source": "sentinel1",
+  "status": "partial",
+  "reason": "Some observations have incomplete coverage, missing safeguards, or failed processing; inspect observation reasons.",
+  "observations": [
+    {
+      "observation_id": "s1_A_55656_445357",
+      "acquired_at": "2024-09-14T04:21:50.000000Z",
+      "scene_ids": [
+        "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240914T042150_20240914T042215_055656_06CBAD_ACFC"
+      ],
+      "baseline_scene_ids": [
+        "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240809T042149_20240809T042214_055131_06B7E6_6EFA",
+        "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240821T042150_20240821T042215_055306_06BE43_3D37",
+        "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240902T042150_20240902T042215_055481_06C4C3_F4DF"
+      ],
+      "scene_acquisitions": [
+        {
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20240914T042150_20240914T042215_055656_06CBAD_ACFC",
+          "acquired_at": "2024-09-14T04:21:50.000000Z"
+        }
+      ],
+      "baseline_acquisitions": [
+        {
+          "observation_id": "s1_A_55131_440294",
+          "acquired_at": "2024-08-09T04:21:49.000000Z"
+        },
+        {
+          "observation_id": "s1_A_55306_441923",
+          "acquired_at": "2024-08-21T04:21:50.000000Z"
+        },
+        {
+          "observation_id": "s1_A_55481_443587",
+          "acquired_at": "2024-09-02T04:21:50.000000Z"
+        }
+      ],
+      "discarded_duplicate_scene_ids": [],
+      "comparison": {
+        "mode": "IW",
+        "relative_orbit": 109,
+        "direction": "DESCENDING",
+        "polarizations": [
+          "VH",
+          "VV"
+        ],
+        "platform": "A"
+      },
+      "layers": [
+        {
+          "layer_type": "flood_mask",
+          "format": "geotiff",
+          "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1\\0f9e05a55e2b334f\\c040bc98e69b456ea13ca5bb01b6db5e\\s1_A_55656_445357\\flood_mask.tif",
+          "bounds": [
+            27.738566084436947,
+            45.57915353157023,
+            27.86161125403158,
+            45.6808957264889
+          ],
+          "crs": "EPSG:32635"
+        },
+        {
+          "layer_type": "flood_extent",
+          "format": "geojson",
+          "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1\\0f9e05a55e2b334f\\c040bc98e69b456ea13ca5bb01b6db5e\\s1_A_55656_445357\\flood_extent.geojson",
+          "bounds": [
+            27.738566084436947,
+            45.57915353157023,
+            27.86161125403158,
+            45.6808957264889
+          ],
+          "crs": "EPSG:4326"
+        },
+        {
+          "layer_type": "valid_coverage",
+          "format": "geojson",
+          "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1\\0f9e05a55e2b334f\\c040bc98e69b456ea13ca5bb01b6db5e\\s1_A_55656_445357\\valid_coverage.geojson",
+          "bounds": [
+            27.738566084436947,
+            45.57915353157023,
+            27.86161125403158,
+            45.6808957264889
+          ],
+          "crs": "EPSG:4326"
+        },
+        {
+          "layer_type": "satellite_image",
+          "format": "png",
+          "local_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1\\0f9e05a55e2b334f\\c040bc98e69b456ea13ca5bb01b6db5e\\s1_A_55656_445357\\radar_vv.png",
+          "bounds": [
+            27.738566084436947,
+            45.57915353157023,
+            27.86161125403158,
+            45.68089572648889
+          ],
+          "crs": "EPSG:3857",
+          "band": "VV",
+          "display_range_db": [
+            -25,
+            0
+          ],
+          "bounds_crs": "EPSG:4326"
+        }
+      ],
+      "status": "partial",
+      "reason": "No observation-specific radar shadow/layover mask supplied; slope masking does not replace it. Permanent-water reference has no usable AOI pixels; exclusion skipped under partial policy. Existing water may be included. Analysis does not cover the entire AOI; missing/excluded pixels must remain unknown.",
+      "quality": {
+        "valid_coverage_pct": 82.96370492462621,
+        "warnings": [
+          "Experimental open-water change detector; thresholds are not validated universally.",
+          "Urban flooding and water beneath vegetation can be missed; bright double-bounce flooding is not detected.",
+          "Wind, soil moisture, farming and speckle can cause false detections or missed flooding.",
+          "10 m grid spacing is not 10 m effective radar resolution.",
+          "Earth Engine GRD is calibrated terrain-corrected sigma0 in dB, not radiometrically terrain-flattened data.",
+          "No spatial speckle filter or minimum patch filter is applied in this first version.",
+          "No observation-specific radar shadow/layover mask supplied; slope masking does not replace it.",
+          "Permanent-water reference has no usable AOI pixels; exclusion skipped under partial policy. Existing water may be included.",
+          "Analysis does not cover the entire AOI; missing/excluded pixels must remain unknown."
+        ],
+        "filters": {
+          "permanent_water": {
+            "requested": true,
+            "applied": false,
+            "reference_coverage_pct": 0.0,
+            "policy": "partial"
+          },
+          "slope": {
+            "applied": true
+          },
+          "shadow": {
+            "applied": false
+          }
+        },
+        "coverage_denominator": "AOI grid cells, including excluded permanent water and terrain",
+        "valid_pixel_count": 862231,
+        "potential_flood_pixel_count": 16032,
+        "shadow_mask_path": null
+      },
+      "effective_settings": {
+        "band": "VV",
+        "drop_db": 3.0,
+        "water_db": -17.0,
+        "min_baseline_observations": 2,
+        "max_angle_difference": 2.0,
+        "max_slope_degrees": 5.0,
+        "exclude_seasonal_water": false,
+        "min_coverage_pct": 20.0,
+        "max_pixels": 5000000,
+        "use_permanent_water": false,
+        "use_dem": true,
+        "shadow_masks": {},
+        "missing_water_policy": "partial",
+        "water_reference_year": 2021
+      },
+      "metadata_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1\\0f9e05a55e2b334f\\c040bc98e69b456ea13ca5bb01b6db5e\\s1_A_55656_445357\\metadata.json"
+    }
+  ],
+  "pipeline_version": "0.1.1",
+  "processed_at": "2026-11-21T08:46:18.875204+00:00",
+  "warnings": [],
+  "manifest_path": "C:\\Users\\iulia\\Desktop\\ROSPIN\\RospinSoftware\\outputs\\sentinel1\\0f9e05a55e2b334f\\c040bc98e69b456ea13ca5bb01b6db5e\\manifest.json",
+  "configuration": {
+    "dates": {
+      "baseline_start": "2024-08-01T00:00:00.000000Z",
+      "event_start": "2024-09-14T00:00:00.000000Z",
+      "search_end": "2024-09-19T00:00:00.000000Z"
+    },
+    "aoi": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            27.74,
+            45.58
+          ],
+          [
+            27.86,
+            45.58
+          ],
+          [
+            27.86,
+            45.68
+          ],
+          [
+            27.74,
+            45.68
+          ],
+          [
+            27.74,
+            45.58
+          ]
+        ]
+      ]
+    },
+    "grid": {
+      "crs": "EPSG:32635",
+      "resolution": 10,
+      "origin": [
+        0,
+        0
+      ]
+    },
+    "sentinel1": {
+      "band": "VV",
+      "drop_db": 3.0,
+      "water_db": -17.0,
+      "min_baseline_observations": 2,
+      "max_angle_difference": 2.0,
+      "max_slope_degrees": 5.0,
+      "exclude_seasonal_water": false,
+      "min_coverage_pct": 20.0,
+      "max_pixels": 5000000,
+      "use_permanent_water": true,
+      "use_dem": true,
+      "shadow_masks": {},
+      "missing_water_policy": "partial",
+      "water_reference_year": 2021
+    },
+    "date_boundaries": "baseline=[baseline_start,event_start); observations=[event_start,search_end), UTC",
+    "source_collection": "COPERNICUS/S1_GRD",
+    "baseline_statistic": "median linear power converted to dB",
+    "resampling": "nearest",
+    "spatial_speckle_filter": null,
+    "output_mask_values": {
+      "0": "no_detection",
+      "1": "potential_flood",
+      "255": "unknown_or_excluded"
+    },
+    "water_asset": "JRC/GSW1_4/YearlyHistory",
+    "dem_asset": "COPERNICUS/DEM/GLO30_2024_1"
+  },
+  "analysis_grid": {
+    "crs": "EPSG:32635",
+    "transform": [
+      10.0,
+      0.0,
+      557620.0,
+      0.0,
+      -10.0,
+      5058860.0
+    ],
+    "width": 948,
+    "height": 1121,
+    "pixel_inclusion": "centre inside AOI"
+  }
+}
