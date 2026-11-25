@@ -20,3 +20,5 @@ data/ems/EMSR758_*/
 *.log
 .DS_Store
 Thumbs.db
+
+tmp_pipeline_runs/
