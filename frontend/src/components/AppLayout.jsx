@@ -8,7 +8,7 @@ import logo from "../assets/logo.png";
 
 export function Brand({to="/",light=false}) {
     return <Link to={to} className={`inline-flex items-center gap-2.5 text-lg font-extrabold tracking-tight no-underline ${light ? "text-white" : "text-deep-teal"}`}>
-        <img src={logo} alt="" className="size-9 rounded-full bg-cloud"/>FloodLens</Link>;
+        <img src={logo} alt="" className="size-9"/>FloodLens</Link>;
 }
 
 function NavItem({to,icon,children,end}) {

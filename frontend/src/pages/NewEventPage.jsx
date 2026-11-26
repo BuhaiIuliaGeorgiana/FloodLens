@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import AoiDrawMap from "../components/AoiDrawMap";
+import Combobox from "../components/Combobox";
 import { createEvent } from "../services/eventService";
 import { useCompany } from "../hooks/useCompany";
-import { polygonAreaKm2 } from "../utils/geo";
+import { describePoint, locatePlace } from "../services/geocodeService";
+import { polygonAreaKm2, polygonLeafletBounds } from "../utils/geo";
+import { matchAddress } from "../utils/places";
 import Icon from "../components/Icon";
 import PageHeader from "../components/PageHeader";
 
@@ -20,11 +23,14 @@ function todayLocal(){
 }
 
 function NewEventPage(){
+    const [places,setPlaces] = useState(null);
     const [title,setTitle] = useState("");
     const [startDate,setStartDate] = useState("");
     const [endDate,setEndDate] = useState("");
-    const [locality,setLocality] = useState("");
-    const [county,setCounty] = useState("");
+    const [place,setPlace] = useState({county:"", locality:""});
+    const [autoFilled,setAutoFilled] = useState(false);
+    const [focus,setFocus] = useState(null);
+    const lookup = useRef(null);
     const {company,loading:companyLoading}=useCompany();
     const [forCompany,setForCompany]=useState(true);
     const [aoi,setAoi] = useState(null);
@@ -32,12 +38,87 @@ function NewEventPage(){
     const [saving,setSaving] = useState(false);
 
     const navigate = useNavigate();
+
+    // Lista judet -> localitati e mare, asa ca se incarca separat de restul paginii
+    useEffect(()=>{
+        import("../data/romania.json").then((module)=>setPlaces(module.default));
+    },[]);
+
+    useEffect(()=>()=>lookup.current?.abort(),[]);
+
+    const {county,locality} = place;
     const today = todayLocal();
+
+    // Anuleaza cererea de geocodare anterioara, ca un raspuns vechi sa nu-l suprascrie pe cel nou
+    function newLookup(){
+        lookup.current?.abort();
+        lookup.current = new AbortController();
+        return lookup.current.signal;
+    }
+
+    // Alegerea manuala muta harta pe judet / localitate
+    function choosePlace(next){
+        setPlace(next);
+        setAutoFilled(false);
+
+        if(!next.county){
+            return;
+        }
+
+        const signal = newLookup();
+        locatePlace(next.county, next.locality, signal)
+            .then((bounds)=>{ if(bounds) setFocus(bounds); })
+            .catch(()=>{});
+    }
+
+    // Zona desenata completeaza judetul si localitatea, daca nu au fost alese manual.
+    // Valorile completate automat urmeaza zona: se golesc la stergere si se refac la redesenare.
+    function handleAoiChange(next){
+        setAoi(next);
+
+        if(!next){
+            if(autoFilled){
+                newLookup();
+                setPlace({county:"", locality:""});
+                setAutoFilled(false);
+            }
+            return;
+        }
+
+        if(!places || (!autoFilled && county && locality)){
+            return;
+        }
+
+        const base = autoFilled ? {county:"", locality:""} : place;
+        const [[south, west], [north, east]] = polygonLeafletBounds(next);
+        const signal = newLookup();
+
+        describePoint((south + north) / 2, (west + east) / 2, signal)
+            .then((address)=>{
+                // O alegere manuala intre timp anuleaza cererea, deci base este inca actual
+                const found = matchAddress(places, address);
+
+                if(!found.county || (base.county && base.county !== found.county)){
+                    setPlace(base);
+                    setAutoFilled(false);
+                    return;
+                }
+
+                setPlace({county:found.county, locality:base.locality || found.locality || ""});
+                setAutoFilled(true);
+            })
+            .catch(()=>{});
+    }
     const areaKm2 = aoi ? polygonAreaKm2(aoi) : 0;
 
     async function handleSubmit(event){
         event.preventDefault();
         setError("");
+
+        if(!locality || !county){
+            setError("Completează localitatea și județul.");
+            return;
+        }
 
         if(!aoi){
             setError("Desenează zona afectată pe hartă.");
@@ -103,11 +184,16 @@ function NewEventPage(){
                                 onChange={(e)=>setEndDate(e.target.value)}/>
                             <span className="hint">Lasă gol dacă evenimentul este în desfășurare.</span>
                         </label>
-                        <label htmlFor="locality" className="field"><span>Localitate <span className="hint">(opțional)</span></span>
-                            <input id="locality" value={locality} onChange={(e)=>setLocality(e.target.value)}/>
+                        <label htmlFor="county" className="field">Județ
+                            <Combobox id="county" options={places ? Object.keys(places) : []} value={county} required disabled={!places}
+                                placeholder={places ? "Caută județul" : "Se încarcă…"}
+                                onChange={(name)=>{ if(name!==county) choosePlace({county:name, locality:""}); }}/>
                         </label>
-                        <label htmlFor="county" className="field"><span>Județ <span className="hint">(opțional)</span></span>
-                            <input id="county" value={county} onChange={(e)=>setCounty(e.target.value)}/>
+                        <label htmlFor="locality" className="field">Localitate
+                            <Combobox id="locality" options={county ? places[county] : []} value={locality} required disabled={!county}
+                                placeholder={county ? "Caută localitatea" : "Alege întâi județul"}
+                                onChange={(name)=>{ if(name!==locality) choosePlace({county, locality:name}); }}/>
+                            {autoFilled && <span className="hint">Completat automat din zona desenată. Verifică și corectează dacă e nevoie.</span>}
                         </label>
                     </div>
                     <div className="mt-5">
@@ -125,9 +211,10 @@ function NewEventPage(){
                     </div>
                     <p className="mb-4 text-sm text-muted">
                         Folosește instrumentul poligon sau dreptunghi (stânga sus) pentru a desena zona.
-                        O zonă nouă o înlocuiește pe cea anterioară.
+                        O zonă nouă o înlocuiește pe cea anterioară. Harta se apropie de județul și localitatea alese;
+                        dacă desenezi întâi zona, județul și localitatea se completează automat.
                     </p>
-                    <div className="overflow-hidden rounded-xl border border-line"><AoiDrawMap onChange={setAoi}/></div>
+                    <div className="overflow-hidden rounded-xl border border-line"><AoiDrawMap onChange={handleAoiChange} focus={focus}/></div>
                 </section>
 
                 {error && <p role="alert">{error}</p>}
