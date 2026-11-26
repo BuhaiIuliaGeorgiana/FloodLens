@@ -75,7 +75,22 @@ function DrawControls({ onChange }){
     return null;
 }
 
-function AoiDrawMap({ onChange }){
+// Smoothly moves the map to the given bounds whenever they change.
+// Leaflet picks the flight duration from the distance, so short hops stay short.
+function FlyTo({ bounds }){
+    const map = useMap();
+
+    useEffect(() => {
+        if(bounds){
+            map.stop();
+            map.flyToBounds(bounds, { maxZoom: 13, padding: [24, 24], easeLinearity: 0.2 });
+        }
+    }, [map, bounds]);
+
+    return null;
+}
+
+function AoiDrawMap({ onChange, focus }){
     return(
         <MapContainer
             center={ROMANIA_CENTER}
@@ -88,6 +103,7 @@ function AoiDrawMap({ onChange }){
             />
 
             <DrawControls onChange={onChange}/>
+            <FlyTo bounds={focus}/>
         </MapContainer>
     );
 }

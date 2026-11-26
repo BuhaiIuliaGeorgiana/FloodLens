@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/* FloodLens palette — usable as bg-deep-teal, text-dusty-aqua, border-mist etc. */
+@theme {
+    --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    --color-deep-teal: #243F43;
+    --color-deep-teal-dark: #1A2F32;
+    --color-dusty-aqua: #6E9292;
+    --color-mist: #B5C7BE;
+    --color-cloud: #E5E8E2;
+    --color-sand: #D1BBA3;
+    --color-sand-dark: #7A5D3E;
+
+    --color-canvas: #F3F5F1;
+    --color-line: #D9DED6;
+    --color-muted: #5E7474;
+    --color-subtle: #EDF0EB;
+    --color-aqua-soft: #E1EAE6;
+    --color-sand-soft: #F2EADF;
+    --color-danger: #A4442F;
+    --color-danger-soft: #F6E4DF;
+    --color-success: #3E7A5E;
+    --color-success-soft: #E0EEE6;
+    --color-warning: #9A6B2E;
+    --color-warning-soft: #F5EAD9;
+
+    --shadow-soft: 0 1px 2px rgb(36 63 67 / .05), 0 8px 24px -12px rgb(36 63 67 / .18);
+}
+
+@layer base {
+    html { @apply bg-canvas text-deep-teal antialiased; font-size: 15px; }
+    body { @apply min-h-screen; }
+    h1, h2, h3, h4 { @apply font-bold leading-tight tracking-tight; }
+    a { @apply underline decoration-mist underline-offset-3 hover:decoration-current; }
+    :focus-visible { @apply outline-2 outline-offset-2 outline-dusty-aqua rounded; }
+
+    input:not([type="checkbox"], [type="radio"]), select, textarea {
+        @apply w-full min-w-0 rounded-lg border border-line bg-white px-3 py-2 text-deep-teal transition
+            placeholder:text-muted/70 focus:border-dusty-aqua focus:ring-3 focus:ring-aqua-soft focus:outline-none
+            disabled:bg-subtle;
+    }
+    input[type="checkbox"] { @apply size-4 accent-deep-teal; }
+    legend { @apply mb-3 font-bold; }
+    [role="alert"] { @apply rounded-lg border border-danger/25 bg-danger-soft px-4 py-3 text-sm text-danger; }
+}
+
+/* Small set of shared building blocks; everything else is utilities in the JSX */
+@layer components {
+    .btn {
+        @apply inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg border
+            border-deep-teal bg-deep-teal px-4 py-2 text-sm font-semibold text-white no-underline transition
+            hover:border-deep-teal-dark hover:bg-deep-teal-dark disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    .btn-secondary { @apply border-line bg-white text-deep-teal hover:border-mist hover:bg-subtle; }
+    .btn-sand { @apply border-sand bg-sand text-deep-teal hover:border-[#C4AB90] hover:bg-[#C4AB90]; }
+    .btn-ghost { @apply border-transparent bg-transparent text-deep-teal hover:border-transparent hover:bg-subtle; }
+    .btn-danger { @apply border-danger/30 bg-white text-danger hover:border-danger hover:bg-danger-soft; }
+    .btn-sm { @apply px-3 py-1.5 text-[0.85rem]; }
+    .btn-lg { @apply px-6 py-3 text-base; }
+
+    .card { @apply rounded-xl border border-line bg-white p-6 shadow-xs; }
+    .card-header { @apply mb-4 flex flex-wrap items-center justify-between gap-4; }
+    .card-title { @apply text-lg font-bold; }
+
+    .field { @apply grid content-start gap-1.5 text-sm font-semibold; }
+    .hint { @apply text-xs font-normal text-muted; }
+    .fieldset { @apply grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-4; }
+
+    .badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-aqua-soft px-2.5 py-0.5 text-xs font-semibold text-deep-teal; }
+    .badge-sand { @apply bg-sand-soft text-sand-dark; }
+    .badge-success { @apply bg-success-soft text-success; }
+    .badge-warning { @apply bg-warning-soft text-warning; }
+    .badge-danger { @apply bg-danger-soft text-danger; }
+    .badge-muted { @apply bg-subtle text-muted; }
+
+    .notice { @apply rounded-lg border border-sand/50 bg-sand-soft px-4 py-3 text-sm; }
+    .notice-success { @apply border-success/25 bg-success-soft text-success; }
+    .eyebrow { @apply mb-1.5 text-xs font-bold uppercase tracking-widest text-dusty-aqua; }
+    .empty { @apply rounded-xl border border-dashed border-line bg-subtle px-4 py-10 text-center text-muted; }
+
+    .loading { @apply flex items-center gap-2.5 py-8 text-muted; }
+    .loading::before { content: ""; @apply size-4 animate-spin rounded-full border-2 border-mist border-t-deep-teal; }
+
+    .icon-chip { @apply grid size-10 place-items-center rounded-[10px] bg-aqua-soft text-deep-teal; }
+    .icon-chip-sand { @apply bg-sand-soft text-sand-dark; }
+
+    .table { @apply w-full border-collapse text-sm; }
+    .table th { @apply border-b border-line px-3 pb-2.5 text-left text-xs font-semibold uppercase tracking-wider text-muted; }
+    .table td { @apply border-b border-line p-3 align-middle; }
+    .table tr:last-child td { @apply border-b-0; }
+}
+
+/* Leaflet controls live outside React; keep them readable over the Tailwind reset */
+.leaflet-container { font-family: var(--font-sans); }
+.leaflet-control-layers {
+    border-radius: var(--radius-lg) !important; border: 1px solid var(--color-line) !important;
+    box-shadow: var(--shadow-soft) !important; font-size: .8rem;
+}
+.leaflet-control-layers label { display: block; }

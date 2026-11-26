@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useParams } from "react-router";
 import { getEventBySlug } from "../services/eventService";
 import EventMap from "../components/EventMap";
+import Icon from "../components/Icon";
 
 function PublicEventPage(){
     const {slug} = useParams();
@@ -67,101 +68,112 @@ function PublicEventPage(){
 }, [event]);
 
     if(loading){
-        return <p>Loading event...</p>;
+        return <p className="loading">Se încarcă evenimentul…</p>;
     }
 
     if(error){
-        return <p role="alert">Error: {error}</p>;
+        return <p role="alert">Eroare: {error}</p>;
     }
 
     if(!event){
         return(
-            <main>
-                <p>Event not found.</p>
-                <Link to="/">Back to events</Link>
-            </main>
+            <div className="empty">
+                <strong className="block text-deep-teal">Evenimentul nu a fost găsit</strong>
+                <p>Este posibil să fie privat sau să nu mai existe.</p>
+                <Link to="/" className="btn btn-secondary mt-4">Înapoi</Link>
+            </div>
         );
     }
 
     // Get all layers belonging to the event
     const layers = event.event_layers ?? [];
+    const place = [event.locality, event.county].filter(Boolean).join(", ");
 
     return(
-        <main>
-            <p><Link to="/">← Back to events</Link></p>
+        <>
+            <Link to="/" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-deep-teal"><Icon name="arrowLeft" className="size-4"/>Înapoi</Link>
 
-            <h1>{event.title}</h1>
+            <div className="mb-7">
+                <div>
+                    <div className="eyebrow">Eveniment de inundație</div>
+                    <h1 className="text-[1.75rem]">{event.title}</h1>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                        <span className="badge badge-muted"><Icon name="calendar" className="size-3"/>
+                            {formatDay(event.started_at)}{event.ended_at && ` – ${formatDay(event.ended_at)}`}</span>
+                        {place && <span className="badge badge-muted"><Icon name="pin" className="size-3"/>{place}</span>}
+                        {!event.ended_at && <span className="badge badge-warning">În desfășurare</span>}
+                        {event.visibility === "private" && <span className="badge badge-muted"><Icon name="lock" className="size-3"/>Privat</span>}
+                    </div>
+                </div>
+            </div>
 
-            {event.locality && <p>Locality: {event.locality}</p>}
-            {event.county && <p>County: {event.county}</p>}
-            <p>Started: {formatDay(event.started_at)}</p>
-            <p>
-                {event.ended_at
-                    ? `Ended: ${formatDay(event.ended_at)}`
-                    : "Ongoing event"}
-            </p>
-            {event.visibility === "private" && <p>Private event</p>}
+            <div className="grid gap-5">
+                {/* Display the event zone, real roads and EMS flood zones */}
+                {(event.aoi_geojson || roadsLayer || emsLayers.length > 0 || imageLayers.length > 0) && (
+                    <EventMap
+                        aoi={event.aoi_geojson}
+                        roadsLayer={roadsLayer}
+                        emsLayers={emsLayers}
+                        imageLayers={imageLayers}
+                    />
+                )}
 
-            {/* Display the event zone, real roads and EMS flood zones */}
-            {(event.aoi_geojson || roadsLayer || emsLayers.length > 0 || imageLayers.length > 0) && (
-                <EventMap
-                    aoi={event.aoi_geojson}
-                    roadsLayer={roadsLayer}
-                    emsLayers={emsLayers}
-                    imageLayers={imageLayers}
-                />
-            )}
+                <section className="card">
+                    <div className="card-header"><h2 className="card-title">Surse de date disponibile</h2>
+                        <span className="badge badge-muted">{layers.length}</span></div>
 
-            <h2>Available data sources</h2>
+                    {layers.length === 0 && (
+                        <div className="empty">Încă nu există rezultate pentru acest eveniment.</div>
+                    )}
 
-            {layers.length === 0 && (
-                <p>No results yet for this event.</p>
-            )}
+                    <ul className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(min(240px,100%),1fr))]">
+                        {layers.map((layer) => {
 
-            <ul>
-                {layers.map((layer) => {
+                            // Get the URL of an available file
+                            let fileUrl = null;
 
-                    // Get the URL of an available file
-                    let fileUrl = null;
+                            if(layer.status === "available" && layer.storage_path){
+                                const result = supabase.storage
+                                    .from("public-demo-layers")
+                                    .getPublicUrl(layer.storage_path);
 
-                    if(layer.status === "available" && layer.storage_path){
-                        const result = supabase.storage
-                            .from("public-demo-layers")
-                            .getPublicUrl(layer.storage_path);
+                                fileUrl = result.data.publicUrl;
+                            }
 
-                        fileUrl = result.data.publicUrl;
-                    }
+                            return(
+                                <li key={layer.id} className="grid content-start gap-1.5 rounded-lg border border-line p-4 text-sm [&_p]:text-muted">
+                                    <div className="flex items-center justify-between gap-2">
+                                        <h3 className="text-[0.95rem]">{layer.source}</h3>
+                                        <span className={`badge ${layer.status === "available" ? "badge-success" : layer.status === "unavailable" ? "badge-danger" : "badge-muted"}`}>
+                                            {STATUS_LABELS[layer.status] ?? layer.status}
+                                        </span>
+                                    </div>
 
-                    return(
-                        <li key={layer.id}>
-                            <h3>{layer.source}</h3>
+                                    <p>Perioadă: {layer.period ?? "Static"}</p>
+                                    <p>Tip: {layer.layer_type}</p>
 
-                            <p>Period: {layer.period ?? "Static"}</p>
-                            <p>Type: {layer.layer_type}</p>
-                            <p>Status: {layer.status}</p>
+                                    {/* Explanation for unavailable layers */}
+                                    {layer.status === "unavailable" && (
+                                        <p>Motiv: {layer.reason}</p>
+                                    )}
 
-                            {/* Link to the real file */}
-                            {fileUrl && (
-                                <a
-                                    href={fileUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    View file
-                                </a>
-                            )}
-
-                            {/* Explanation for unavailable layers */}
-                            {layer.status === "unavailable" && (
-                                <p>Reason: {layer.reason}</p>
-                            )}
-                        </li>
-                    );
-                })}
-            </ul>
-        </main>
+                                    {/* Link to the real file */}
+                                    {fileUrl && (
+                                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-sm">
+                                            Deschide fișierul ↗
+                                        </a>
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </section>
+            </div>
+        </>
     );
 }
+
+const STATUS_LABELS = {available: "Disponibil", unavailable: "Indisponibil", pending: "În așteptare"};
 
 // Show a date as a Romanian calendar day
 function formatDay(value){

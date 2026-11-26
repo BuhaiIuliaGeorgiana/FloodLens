@@ -6,7 +6,7 @@ export default function CompanyFields({value,onChange,disabled=false}) {
         ["contact_email","Email de contact","email",254,true], ["phone","Telefon (opțional)","tel",50,false],
         ["website","Website (opțional)","url",500,false]
     ];
-    return <fieldset disabled={disabled}><legend>Datele firmei</legend>{fields.map(([key,label,type,max,required])=>
-        <label key={key}>{label}<input name={key} type={type} value={value[key] ?? ""} maxLength={max} required={required}
+    return <fieldset disabled={disabled} className="fieldset"><legend className="col-span-full">Datele firmei</legend>{fields.map(([key,label,type,max,required])=>
+        <label key={key} className="field">{label}<input name={key} type={type} value={value[key] ?? ""} maxLength={max} required={required}
             onChange={e=>onChange({...value,[key]:e.target.value})}/></label>)}</fieldset>;
 }

@@ -151,7 +151,7 @@ function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
     }, [roadsLayer, emsLayers]);
 
     if(loading){
-        return <p>Loading map layers...</p>;
+        return <p className="loading">Se încarcă straturile hărții…</p>;
     }
 
     if(error){
@@ -159,17 +159,20 @@ function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
     }
 
     return(
-        <section style={{maxWidth: "750px", margin: "20px auto"}}>
-            <h2>Event map</h2>
+        <section className="card">
+            <div className="card-header"><h2 className="card-title">Harta evenimentului</h2>
 
             {roads && (
-                <p>Real road segments: {roads.features.length}</p>
+                <span className="badge badge-muted"><span>{roads.features.length}</span> segmente de drum</span>
             )}
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-line">
 
             <MapContainer
                 bounds={polygonLeafletBounds(aoi) ?? DEFAULT_BOUNDS}
                 scrollWheelZoom={false}
-                style={{height: "450px", width: "100%"}}
+                style={{height: "520px", width: "100%"}}
             >
                 <TileLayer
                     attribution={
@@ -185,11 +188,11 @@ function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
 
                     {/* Zone selected when the event was created */}
                     {aoi && (
-                        <LayersControl.Overlay name="Event zone" checked>
+                        <LayersControl.Overlay name="Zona evenimentului" checked>
                             <GeoJSON
                                 data={aoi}
                                 style={{
-                                    color: "#333",
+                                    color: "#243F43",
                                     weight: 2,
                                     dashArray: "6 4",
                                     fill: false
@@ -232,7 +235,7 @@ function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
                     {/* OpenStreetMap roads */}
                     {roads && (
                         <LayersControl.Overlay
-                            name="Roads (OpenStreetMap)"
+                            name="Drumuri (OpenStreetMap)"
                             checked
                         >
                             <GeoJSON
@@ -249,7 +252,7 @@ function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
                     {floods.map(({layer, data}, index) => (
                         <LayersControl.Overlay
                             key={layer.id}
-                            name={`Flooded area - ${formatDate(layer.acquired_at)}`}
+                            name={`Zonă inundată – ${formatDate(layer.acquired_at)}`}
                             checked={index === floods.length - 1}
                         >
                             <GeoJSON
@@ -266,29 +269,33 @@ function EventMap({ aoi, roadsLayer, emsLayers, imageLayers = [] }){
 
                 </LayersControl>
             </MapContainer>
+            </div>
+
+            <div className="mt-4 grid gap-1.5 text-sm text-muted">
 
             {roads && (
                 <p>
-                    Blue lines represent mapped roads,
-                    not confirmed flood damage.
+                    Liniile albastre reprezintă drumuri cartografiate,
+                    nu avarii confirmate.
                 </p>
             )}
 
             {imageLayers.length > 0 && (
                 <p>
-                    Enable a satellite preview using the map controls.
-                    Image colors depend on the displayed band or index
-                    and do not, by themselves, confirm flooding.
+                    Activează o previzualizare satelitară din controalele hărții.
+                    Culorile depind de banda sau indicele afișat
+                    și nu confirmă singure prezența inundației.
                 </p>
             )}
 
             {floods.length > 0 && (
                 <p>
-                    Colored polygons are flood zones mapped by Copernicus EMS.
-                    The absence of a polygon outside the mapped coverage
-                    does not mean there was no flooding.
+                    Poligoanele colorate sunt zone inundate cartografiate de Copernicus EMS.
+                    Lipsa unui poligon în afara acoperirii cartografiate
+                    nu înseamnă că nu a existat inundație.
                 </p>
             )}
+            </div>
         </section>
     );
 }

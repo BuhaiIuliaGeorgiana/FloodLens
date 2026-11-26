@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { safeReturnPath } from "../utils/eventInput";
 import { login } from "../services/authService";
+import AuthLayout from "../components/AuthLayout";
 
 function LoginPage() {
     const [email,setEmail] = useState("");
@@ -32,44 +33,33 @@ function LoginPage() {
 
             navigate(next, {replace:true});
         }catch(err){
-            setError(err.message || "An unexpected error occured.");
+            setError(err.message || "A apărut o eroare neașteptată.");
         }finally{
             setLoading(false);
         }
     }
     if(user) return <Navigate to={next} replace/>;
     return (
-        <div>
-            <h1>Login Page</h1>
-
-            <form onSubmit = {handleLogin}>
-                <label htmlFor="email">Email:</label>
-                    <input  id="email"
-                            value = {email}
-                            type="email"
-                            onChange={(e)=>setEmail(e.target.value)} 
-                            required
-                            />
-
-                <label htmlFor="password">Password:</label>
-                    <input  id="password" 
-                            type="password"
-                            value = {password}
-                            onChange={(e)=>setPassword(e.target.value)} 
-                            required
-                            />
-
-                <button type="submit" disabled = {loading} >
-                    {loading ? "Logging in..." : "Login"}
+        <AuthLayout title="Bine ai revenit" subtitle="Autentifică-te pentru a continua."
+            asideTitle="Inundațiile, văzute de sus." asideText="Evenimentele, hărțile și echipa ta te așteaptă în dashboard.">
+            <form onSubmit={handleLogin} className="grid gap-4">
+                <label htmlFor="email" className="field">Email
+                    <input id="email" type="email" autoComplete="email" value={email}
+                        onChange={(e)=>setEmail(e.target.value)} required/>
+                </label>
+                <label htmlFor="password" className="field">Parolă
+                    <input id="password" type="password" autoComplete="current-password" value={password}
+                        onChange={(e)=>setPassword(e.target.value)} required/>
+                </label>
+                {error && <p role="alert">{error}</p>}
+                <button type="submit" className="btn w-full" disabled={loading}>
+                    {loading ? "Se autentifică…" : "Autentificare"}
                 </button>
-                {error ? <p>{error}</p> : <p></p>}
             </form>
-
-            <p>
-                Don't have an account?
-                <Link to="/signup" state={{from:next}}>Sign up</Link>
+            <p className="text-center text-sm text-muted">
+                Nu ai cont? <Link to="/signup" state={{from:next}}>Creează unul</Link>
             </p>
-        </div>
+        </AuthLayout>
     );
 }
 
