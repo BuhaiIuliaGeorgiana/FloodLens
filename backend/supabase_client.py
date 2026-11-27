@@ -44,12 +44,12 @@ def update_pipeline_run(
 def get_existing_layer_keys(event_id: str) -> set[tuple[str, str|None,str]]:
     res = (
         supabase.table("event_layers")
-        .select("source, aquired_at, layer_type")
+        .select("source, acquired_at, layer_type")
         .eq("event_id", event_id)
         .execute()
     )
     return {
-        (row["source"], row.get("aquired_at"), row["layer_type"]) for row in (res.data or [])
+        (row["source"], row.get("acquired_at"), row["layer_type"]) for row in (res.data or [])
     }
 
 def upload_file(local_path: Path, storage_path: str, content_type: str = "application/octet-stream") -> str:
